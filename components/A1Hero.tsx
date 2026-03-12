@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 const slides = [
   { id: 1, title: "محلات عبود عبد ربه", subtitle: "قطع مرسيدس أصلية ومستعملة بجودة ممتازة", button: "تصفح القطع", type: "image" },
@@ -12,18 +12,8 @@ const slides = [
 
 export default function A1Hero() {
   const [current, setCurrent] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const touchStartX = useRef<number | null>(null);
-  useEffect(() => {
-    if (isHovering) return;
-
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 10000);
-
-    return () => clearInterval(timer);
-  }, [isHovering]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!wrapRef.current) return;
@@ -60,8 +50,6 @@ const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
       <div className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6">
         <div
           ref={wrapRef}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
           onMouseMove={handleMouseMove}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
