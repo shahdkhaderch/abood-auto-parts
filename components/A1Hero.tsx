@@ -14,7 +14,7 @@ export default function A1Hero() {
   const [current, setCurrent] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
-
+  const touchStartX = useRef<number | null>(null);
   useEffect(() => {
     if (isHovering) return;
 
@@ -35,7 +35,26 @@ export default function A1Hero() {
 
     if (next !== current) setCurrent(next);
   };
+const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+  touchStartX.current = e.touches[0].clientX;
+};
 
+const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+  if (touchStartX.current === null) return;
+
+  const touchEndX = e.changedTouches[0].clientX;
+  const diff = touchStartX.current - touchEndX;
+
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    } else {
+      setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+    }
+  }
+
+  touchStartX.current = null;
+};
   return (
     <section className="relative overflow-hidden bg-white">
       <div className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6">
@@ -44,6 +63,8 @@ export default function A1Hero() {
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
           onMouseMove={handleMouseMove}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
           className="relative h-[460px] overflow-hidden rounded-[20px] bg-black shadow-[0_20px_60px_rgba(0,0,0,0.18)] sm:h-[520px] sm:rounded-[28px]"
         >
           {slides.map((slide, index) => (
@@ -95,7 +116,7 @@ function ImageSlide({ slide }: { slide: { title: string; subtitle: string; butto
 
       <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/25 to-transparent sm:from-black/60 sm:via-black/20 sm:to-transparent" />
 
-      <div className="absolute inset-0 flex items-start pt-8 sm:items-center sm:pt-0">
+      <div className="absolute inset-0 hidden sm:flex items-center">
         <div className="mr-auto w-full max-w-[620px] px-5 text-right text-white sm:px-10">
           <h1 className="mb-3 text-2xl font-black leading-tight sm:text-5xl">{slide.title}</h1>
           <p className="mb-5 max-w-[520px] text-xs leading-6 text-white/85 sm:mb-6 sm:text-lg sm:leading-7">{slide.subtitle}</p>
