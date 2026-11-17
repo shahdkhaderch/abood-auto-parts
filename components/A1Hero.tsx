@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import Link from "next/link";
+import { whatsappLink } from "@/lib/site";
+import { useEffect, useRef, useState } from "react";
+
+const AUTOPLAY_MS = 6000;
+// Screen-reader labels for the dots, in words (no numbers are shown anywhere on the site).
+const SLIDE_ORDINALS = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة"];
 
 const slides = [
   { id: 1, title: "محلات عبود عبد ربه", subtitle: "قطع مرسيدس أصلية ومستعملة بجودة ممتازة", button: "تصفح القطع", type: "image" },
@@ -12,24 +18,24 @@ const slides = [
 
 export default function A1Hero() {
   const [current, setCurrent] = useState(0);
-  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const [paused, setPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!wrapRef.current) return;
+  // Auto-advance every 6s; paused while hovered or touched. Restarts after any slide change.
+  useEffect(() => {
+    if (paused) return;
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = window.setTimeout(() => setCurrent((prev) => (prev + 1) % slides.length), AUTOPLAY_MS);
+    return () => window.clearTimeout(t);
+  }, [current, paused]);
 
-    const rect = wrapRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const part = rect.width / slides.length;
-    const next = Math.min(slides.length - 1, Math.max(0, Math.floor(x / part)));
-
-    if (next !== current) setCurrent(next);
-  };
 const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+  setPaused(true);
   touchStartX.current = e.touches[0].clientX;
 };
 
 const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+  setPaused(false);
   if (touchStartX.current === null) return;
 
   const touchEndX = e.changedTouches[0].clientX;
@@ -49,10 +55,11 @@ const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     <section className="relative overflow-hidden bg-white">
       <div className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6">
         <div
-          ref={wrapRef}
-          onMouseMove={handleMouseMove}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
+          onTouchCancel={() => { setPaused(false); touchStartX.current = null; }}
           className="relative h-[460px] overflow-hidden rounded-[20px] bg-black shadow-[0_20px_60px_rgba(0,0,0,0.18)] sm:h-[520px] sm:rounded-[28px]"
         >
           {slides.map((slide, index) => (
@@ -81,7 +88,7 @@ const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
                   "h-2 rounded-full transition-all duration-300",
                   current === index ? "w-8 bg-orange-500" : "w-2 bg-white/50 hover:bg-white/80",
                 ].join(" ")}
-                aria-label={`slide-${index + 1}`}
+                aria-label={`الشريحة ${SLIDE_ORDINALS[index] ?? ""}`.trim()}
               />
             ))}
           </div>
@@ -95,26 +102,26 @@ function ImageSlide({ slide }: { slide: { title: string; subtitle: string; butto
   return (
     <div className="relative h-full w-full">
       <div className="absolute inset-0 block sm:hidden">
-        <Image src="/slider/A1-1M.png" alt="A1 mobile" fill className="object-cover object-top" priority />
+        <Image src="/slider/A1-1M.png" alt="محلات عبود عبد ربه لقطع المرسيدس" fill className="object-cover object-top" priority />
       </div>
 
       <div className="absolute inset-0 hidden sm:block">
-        <Image src="/slider/A1-1D.png" alt="A1 desktop" fill className="object-cover" priority />
+        <Image src="/slider/A1-1D.png" alt="محلات عبود عبد ربه لقطع المرسيدس" fill className="object-cover" priority />
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/25 to-transparent sm:from-black/60 sm:via-black/20 sm:to-transparent" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-l from-black/70 via-black/25 to-transparent sm:from-black/60 sm:via-black/20 sm:to-transparent" />
 
       <div className="absolute inset-0 hidden sm:flex items-center">
         <div className="mr-auto w-full max-w-[620px] px-5 text-right text-white sm:px-10">
           <h1 className="mb-3 text-2xl font-black leading-tight sm:text-5xl">{slide.title}</h1>
           <p className="mb-5 max-w-[520px] text-xs leading-6 text-white/85 sm:mb-6 sm:text-lg sm:leading-7">{slide.subtitle}</p>
           <div className="flex justify-end">
-            <a
-              href="#offers"
+            <Link
+              href="/products"
               className="inline-flex items-center rounded-2xl bg-orange-500 px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_10px_30px_rgba(249,115,22,0.35)] transition hover:bg-orange-600 sm:px-6 sm:py-3 sm:text-sm"
             >
               {slide.button}
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -125,9 +132,9 @@ function ImageSlide({ slide }: { slide: { title: string; subtitle: string; butto
 function DarkSlide({ slide }: { slide: { title: string; subtitle: string; button: string } }) {
   return (
     <div className="relative h-full w-full overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.14),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(249,115,22,0.10),transparent_30%)]" />
-      <div className="absolute left-[-80px] top-[60px] h-[280px] w-[280px] rounded-full bg-orange-500/10 blur-3xl" />
-      <div className="absolute bottom-[-70px] right-[-20px] h-[260px] w-[260px] rounded-full bg-white/5 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.14),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(249,115,22,0.10),transparent_30%)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute left-[-80px] top-[60px] h-[280px] w-[280px] rounded-full bg-orange-500/10 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-[-70px] right-[-20px] h-[260px] w-[260px] rounded-full bg-white/5 blur-3xl" />
 
       <div className="grid h-full items-center gap-8 px-5 sm:grid-cols-2 sm:px-10">
         <div className="order-2 hidden sm:block sm:order-1">
@@ -159,7 +166,7 @@ function DarkSlide({ slide }: { slide: { title: string; subtitle: string; button
           <p className="mb-5 max-w-[520px] text-xs leading-6 text-white/80 sm:mb-6 sm:text-lg sm:leading-7">{slide.subtitle}</p>
 
           <a
-            href="https://wa.me/972599842238"
+            href={whatsappLink()}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center rounded-2xl bg-orange-500 px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_10px_30px_rgba(249,115,22,0.35)] transition hover:bg-orange-600 sm:px-6 sm:py-3 sm:text-sm"
@@ -175,7 +182,7 @@ function DarkSlide({ slide }: { slide: { title: string; subtitle: string; button
 function LightSlide({ slide }: { slide: { title: string; subtitle: string; button: string } }) {
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#f8f5ef]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.06),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.05),transparent_20%)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.06),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.05),transparent_20%)]" />
 
       <div className="grid h-full items-center gap-8 px-5 sm:grid-cols-[1.1fr_0.9fr] sm:px-12">
         <div className="text-right">
@@ -189,7 +196,7 @@ function LightSlide({ slide }: { slide: { title: string; subtitle: string; butto
 
           <div className="flex justify-end">
             <a
-              href="https://wa.me/972599842238"
+              href={whatsappLink()}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center rounded-2xl bg-orange-500 px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_10px_30px_rgba(249,115,22,0.25)] transition hover:bg-orange-600 sm:px-6 sm:py-3 sm:text-sm"
@@ -225,9 +232,9 @@ function LightSlide({ slide }: { slide: { title: string; subtitle: string; butto
 function MixSlide({ slide }: { slide: { title: string; subtitle: string; button: string } }) {
   return (
     <div className="relative h-full w-full overflow-hidden bg-neutral-950">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.10),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05),transparent_18%)]" />
-      <div className="absolute left-[-40px] bottom-[-60px] h-[220px] w-[220px] rounded-full bg-orange-500/10 blur-3xl" />
-      <div className="absolute right-[-20px] top-[-30px] h-[180px] w-[180px] rounded-full bg-white/5 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.10),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05),transparent_18%)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute left-[-40px] bottom-[-60px] h-[220px] w-[220px] rounded-full bg-orange-500/10 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute right-[-20px] top-[-30px] h-[180px] w-[180px] rounded-full bg-white/5 blur-3xl" />
 
       <div className="grid h-full items-center gap-8 px-5 sm:grid-cols-[1fr_1.1fr] sm:px-12">
         <div className="hidden items-center justify-center sm:flex">
@@ -265,12 +272,12 @@ function MixSlide({ slide }: { slide: { title: string; subtitle: string; button:
             <span className="rounded-2xl border border-white/10 bg-white/10 px-3 py-1.5 text-[10px] font-bold sm:px-4 sm:py-2 sm:text-xs">عروض</span>
           </div>
 
-          <a
-            href="#offers"
+          <Link
+            href="/products"
             className="inline-flex items-center rounded-2xl bg-orange-500 px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_10px_30px_rgba(249,115,22,0.35)] transition hover:bg-orange-600 sm:px-6 sm:py-3 sm:text-sm"
           >
             {slide.button}
-          </a>
+          </Link>
         </div>
       </div>
     </div>

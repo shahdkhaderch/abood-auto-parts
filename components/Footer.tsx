@@ -1,7 +1,17 @@
-"use client";
+import Image from "next/image";
 import Link from "next/link";
+import { OFFER_LABEL, productsHref, type NavData } from "@/lib/filters";
+import { site, whatsappLink } from "@/lib/site";
 
-export default function Footer() {
+export default function Footer({ nav }: { nav: NavData }) {
+  // Category / offer links only appear once the sheet has products for them.
+  const links = [
+    { href: "/", label: "الرئيسية" },
+    { href: "/products", label: "كل القطع" },
+    ...nav.categories.map((c) => ({ href: productsHref({ category: c.value }), label: c.label })),
+    ...(nav.offerCount > 0 ? [{ href: productsHref({ offer: true }), label: OFFER_LABEL }] : []),
+  ];
+
   return (
     <footer className="mt-20 bg-black text-white">
 
@@ -11,9 +21,11 @@ export default function Footer() {
         <div>
           <div className="mb-4 flex items-center gap-3">
 
-            <img
+            <Image
               src="/abood-logo.png"
-              alt="عبود عبد ربه"
+              alt={site.name}
+              width={64}
+              height={64}
               className="h-16 w-16 rounded-2xl object-cover"
             />
 
@@ -45,37 +57,13 @@ export default function Footer() {
           </h3>
 
           <ul className="space-y-3 text-sm text-neutral-400">
-
-            <li>
-              <Link href="/" className="hover:text-orange-500 transition">
-                الرئيسية
-              </Link>
-            </li>
-
-            <li>
-              <Link href="#interior" className="hover:text-orange-500 transition">
-                كماليات داخلية
-              </Link>
-            </li>
-
-            <li>
-              <Link href="#exterior" className="hover:text-orange-500 transition">
-                كماليات خارجية
-              </Link>
-            </li>
-
-            <li>
-              <Link href="#lights" className="hover:text-orange-500 transition">
-                أضوية السيارة
-              </Link>
-            </li>
-
-            <li>
-              <Link href="#offers" className="hover:text-orange-500 transition">
-                العروض
-              </Link>
-            </li>
-
+            {links.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="hover:text-orange-500 transition">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
           </ul>
 
         </div>
@@ -91,7 +79,7 @@ export default function Footer() {
           <div className="space-y-3 text-sm text-neutral-400">
 
             <p>
-              شارع الحسبة - مقابل كازية كنعان
+              {site.location}
             </p>
 
             <p>
@@ -106,8 +94,10 @@ export default function Footer() {
 
             {/* whatsapp */}
             <a
-              href="https://wa.me/972599842238"
+              href={whatsappLink()}
               target="_blank"
+              rel="noreferrer"
+              aria-label="واتساب"
               className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 hover:bg-orange-500 transition"
             >
               <svg
@@ -122,8 +112,10 @@ export default function Footer() {
 
             {/* facebook */}
             <a
-              href="https://www.facebook.com/profile.php?id=61575819384981"
+              href={site.facebookUrl}
               target="_blank"
+              rel="noreferrer"
+              aria-label="فيسبوك"
               className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 hover:bg-orange-500 transition"
             >
               <svg
@@ -138,8 +130,10 @@ export default function Footer() {
 
             {/* instagram */}
             <a
-              href="https://www.instagram.com/abood_abdrabu_parts/"
+              href={site.instagramUrl}
               target="_blank"
+              rel="noreferrer"
+              aria-label="إنستغرام"
               className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 hover:bg-orange-500 transition"
             >
               <svg
@@ -161,7 +155,7 @@ export default function Footer() {
 
       {/* bottom */}
       <div className="border-t border-neutral-800 py-4 text-center text-sm text-neutral-500">
-        © {new Date().getFullYear()} جميع الحقوق محفوظة - عبود عبد ربه
+        © جميع الحقوق محفوظة - عبود عبد ربه
       </div>
 
     </footer>

@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# generated from public/products by scripts/gen-product-images.mjs
+/lib/product-images.generated.ts
 
 # vercel
 .vercel
