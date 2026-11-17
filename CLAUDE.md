@@ -41,7 +41,8 @@ This file is the single source of truth for continuing the work. It describes th
 
 - Products come only from the **published Google Sheet CSV** (`PRODUCTS_CSV_URL`). Sheet edits appear on the site within **5 minutes** (no push, no redeploy). Google's published CSV itself can lag a few minutes behind edits.
 - **Read products only through `getProducts()` / `getProductBySlug()` in `lib/products.ts`.** It fetches the CSV (`revalidate: 300`, tag `products`), parses it (`csvToProducts` in `lib/catalog.ts`), logs warnings, then drops photos that are not on Cloudinary (`lib/image-check.ts`). If a required column is missing it throws, so Next keeps serving the last good page.
-- Columns are found **by header name**; column order does not matter and **every other column is ignored**.
+- **Failure handling:** in production a missing `PRODUCTS_CSV_URL`, a failed fetch, an HTML response (sheet unpublished) or a CSV with 0 products **throws** — the build fails or, on a background refresh, Next keeps the last good data. Only in development does a missing variable give an empty catalogue (with a warning). There is no hardcoded fallback URL.
+- Columns are found **by header name** (BOM, zero-width/RTL marks removed, whitespace collapsed and trimmed, so `"حالة الصورة "` matches); column order does not matter and **every other column is ignored**.
 
 | Column | Required | Values | Used for |
 |---|---|---|---|
@@ -52,7 +53,7 @@ This file is the single source of truth for continuing the work. It describes th
 | `القسم` | optional (not in the sheet now) | a category label from the table in §3 | overrides the category detected from the name |
 | `عرض` | optional (not in the sheet now) | `نعم` or empty | offers filter `?offer=1`, "عروض" badge/link |
 
-- **Ignored on purpose** (present in the sheet as of 2026-11-17): `#`, `الصورة`, `حالة الصورة` (both empty). Earlier versions had `كلمات البحث`, `مراجعة`, `اسم الصورة المقترح` — all ignored/removed.
+- **Ignored on purpose** (present in the sheet as of 2026-11-17): `#`, `الصورة`, `حالة الصورة` (header has a trailing space; internal photo review: صحيحة / غلط / بحاجة تأكيد — must never hide or mark a product). Earlier versions had `كلمات البحث`, `مراجعة`, `اسم الصورة المقترح` — all ignored/removed.
 - Values are compared after normalisation (`lib/text.ts`), so `اضوية` = `أضوية`. Unknown `القسم`/`عرض` values log a warning.
 - Rows without a code are skipped; duplicate codes: first row wins (both log a warning).
 - **Sheet status 2026-11-17:** 699 products. 3 rows have a code but no name (`BGRE0035`, `LIAH0031`, `LIAH0061`) — they show their code as the name until the sheet is fixed. 696 products have a file name in `صور مرجعية` (697 file names; `LI2J0038` has two); **188 of those files exist on Cloudinary, 509 are not uploaded yet** (they show the placeholder automatically).

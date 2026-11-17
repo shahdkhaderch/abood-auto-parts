@@ -256,12 +256,20 @@ export function parseCategory(value: string): Category | null | undefined {
 
 export type ParseResult = { products: Product[]; warnings: string[] };
 
+function cleanHeader(h: string): string {
+  return h.replace(/[﻿​-‏‪-‮⁦-⁩]/g, "").replace(/\s+/g, " ").trim();
+}
+
 export function csvToProducts(csv: string): ParseResult {
   const rows = parseCsv(csv);
   const warnings: string[] = [];
   if (rows.length === 0) throw new Error("Products CSV is empty");
 
-  const header = rows[0].map((h) => h.trim());
+  // Headers are matched by name after cleanup: BOM, zero-width and RTL/LTR marks removed,
+  // whitespace (incl. non-breaking) collapsed and trimmed — so "حالة الصورة " = "حالة الصورة".
+  // Every column not listed above (#, الصورة, حالة الصورة …) is ignored: internal review only,
+  // it never hides a product or changes how it is shown.
+  const header = rows[0].map(cleanHeader);
   const iCode = header.indexOf(HEADER_CODE);
   const iName = header.indexOf(HEADER_NAME);
   const iModel = header.indexOf(HEADER_MODEL);
