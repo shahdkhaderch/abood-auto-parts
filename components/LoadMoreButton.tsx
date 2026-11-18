@@ -15,13 +15,13 @@ function Label() {
  */
 export default function LoadMoreButton({ href }: { href: string }) {
   return (
-    <div className="mt-6 flex justify-center">
+    <div className="mt-8 flex justify-center">
       <Link
         href={href}
         replace
         scroll={false}
         prefetch={false}
-        className="inline-flex h-12 min-w-44 items-center justify-center rounded-2xl border-2 border-orange-600 px-8 text-sm font-extrabold text-orange-700 transition hover:bg-orange-600 hover:text-white"
+        className="inline-flex h-12 min-w-48 items-center justify-center rounded-xl border border-line-strong bg-card px-8 text-base font-bold text-ink shadow-xs transition hover:border-ink-soft hover:shadow-sm"
       >
         <Label />
       </Link>

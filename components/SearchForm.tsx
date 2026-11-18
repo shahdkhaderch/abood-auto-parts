@@ -39,7 +39,7 @@ export default function SearchForm({ keepFilters = false, autoFocus = false, onS
       <label htmlFor={keepFilters ? "search-page" : undefined} className="sr-only">
         بحث عن قطعة
       </label>
-      <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-neutral-400">
+      <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-ink-soft">
         <IconSearch />
       </div>
       <input
@@ -53,11 +53,11 @@ export default function SearchForm({ keepFilters = false, autoFocus = false, onS
         enterKeyHint="search"
         autoComplete="off"
         placeholder="ابحث باسم القطعة أو الموديل..."
-        className="w-full rounded-2xl border border-neutral-200 bg-white py-3 pr-10 pl-20 text-sm text-neutral-900 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+        className="h-11 w-full rounded-xl border border-line bg-card pr-10 pl-20 text-base text-ink outline-none transition placeholder:text-ink-soft focus:border-accent focus:ring-2 focus:ring-accent-ring"
       />
       <button
         type="submit"
-        className="absolute inset-y-1.5 left-1.5 rounded-xl bg-orange-600 px-4 text-xs font-extrabold text-white transition hover:bg-orange-700"
+        className="absolute inset-y-1 left-1 rounded-lg bg-accent px-4 text-sm font-bold text-card transition hover:bg-accent-hover"
       >
         بحث
       </button>

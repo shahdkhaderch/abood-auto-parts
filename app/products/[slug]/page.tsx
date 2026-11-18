@@ -61,40 +61,40 @@ export default async function ProductPage({ params }: Props) {
   ].filter((d) => d.values.length > 0);
 
   return (
-    <main className="min-h-screen bg-white px-4 py-6 pb-28 sm:px-6 sm:py-10 sm:pb-10">
+    <main className="min-h-screen bg-surface px-4 py-6 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-6xl">
-        <nav aria-label="مسار التنقل" className="mb-5 flex items-center gap-2 text-sm text-neutral-500">
-          <Link href="/" className="hover:text-orange-600 transition">الرئيسية</Link>
+        <nav aria-label="مسار التنقل" className="mb-6 flex min-w-0 items-center gap-2 text-sm text-ink-soft">
+          <Link href="/" className="shrink-0 transition hover:text-accent-text">الرئيسية</Link>
           <span aria-hidden="true">‹</span>
-          <Link href="/products" className="hover:text-orange-600 transition">القطع</Link>
+          <Link href="/products" className="shrink-0 transition hover:text-accent-text">القطع</Link>
           <span aria-hidden="true">‹</span>
-          <span className="truncate font-semibold text-neutral-800">{productLabel(product)}</span>
+          <span className="truncate font-medium text-ink">{productLabel(product)}</span>
         </nav>
 
-        <div className="grid gap-6 sm:grid-cols-2 sm:gap-10">
+        <div className="grid gap-6 md:grid-cols-2 md:gap-10">
           <ProductImage product={product} variant="page" priority />
 
           <div className="flex flex-col">
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex w-fit rounded-full bg-orange-50 px-3 py-1 text-xs font-extrabold text-orange-700">
+              <span className="inline-flex w-fit rounded-md bg-card px-3 py-1 text-sm font-bold text-ink-soft ring-1 ring-line">
                 {productLabel(product)}
               </span>
               {product.onOffer && (
-                <Link href={productsHref({ offer: true })} className="inline-flex w-fit rounded-full bg-orange-600 px-3 py-1 text-xs font-extrabold text-white">
+                <Link href={productsHref({ offer: true })} className="inline-flex w-fit rounded-md bg-accent px-3 py-1 text-sm font-bold text-card transition hover:bg-accent-hover">
                   {OFFER_LABEL}
                 </Link>
               )}
             </div>
-            <h1 className="mt-3 text-2xl font-black leading-snug text-neutral-950 sm:text-4xl">{product.name}</h1>
+            <h1 className="mt-4 text-2xl font-bold leading-[1.45] text-ink sm:text-3xl lg:text-4xl">{product.name}</h1>
 
-            <dl className="mt-6 divide-y divide-neutral-100 overflow-hidden rounded-2xl border border-neutral-200">
+            <dl className="mt-6 divide-y divide-line overflow-hidden rounded-xl border border-line bg-card shadow-xs">
               {details.map((d) => (
                 <div key={d.label} className="flex items-center justify-between gap-4 px-4 py-3">
-                  <dt className="text-sm text-neutral-500">{d.label}</dt>
-                  <dd dir={d.ltr ? "ltr" : undefined} className="flex flex-wrap justify-end gap-x-3 gap-y-1 text-sm font-extrabold text-neutral-900">
+                  <dt className="text-base text-ink-soft">{d.label}</dt>
+                  <dd dir={d.ltr ? "ltr" : undefined} className="flex flex-wrap justify-end gap-x-3 gap-y-1 text-base font-bold text-ink">
                     {d.values.map((v) =>
                       v.href ? (
-                        <Link key={v.text} href={v.href} className="text-orange-700 underline decoration-orange-300 underline-offset-4 hover:text-orange-800">
+                        <Link key={v.text} href={v.href} className="text-accent-text underline decoration-accent-ring underline-offset-4 hover:text-accent-hover hover:decoration-accent-text">
                           {v.text}
                         </Link>
                       ) : (
@@ -110,7 +110,7 @@ export default async function ProductPage({ params }: Props) {
               href={productWhatsAppLink(product)}
               target="_blank"
               rel="noreferrer"
-              className="mt-6 flex h-16 w-full items-center justify-center gap-3 rounded-2xl bg-orange-600 text-lg font-black text-white shadow-[0_12px_30px_rgba(234,88,12,0.35)] transition hover:bg-orange-700 active:scale-[0.99]"
+              className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-whatsapp px-4 text-lg font-bold text-ink shadow-md transition hover:bg-whatsapp-hover active:scale-[0.99]"
             >
               <WhatsAppIcon size={24} />
               استفسر عن هالقطعة على واتساب

@@ -13,35 +13,35 @@ export default function Footer({ nav }: { nav: NavData }) {
   ];
 
   return (
-    <footer className="mt-20 bg-black text-white">
+    <footer className="mt-16 bg-dark pb-16 text-on-dark sm:pb-0">
 
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-3">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-3">
 
         {/* about */}
         <div>
-          <div className="mb-4 flex items-center gap-3">
+          <div className="mb-4 flex items-center gap-4">
 
             <Image
               src="/abood-logo.png"
               alt={site.name}
               width={64}
               height={64}
-              className="h-16 w-16 rounded-2xl object-cover"
+              className="h-16 w-16 rounded-xl object-cover"
             />
 
             <div>
-              <div className="text-lg font-extrabold">
+              <div className="text-lg font-bold">
                 عبود عبد ربه
               </div>
 
-              <div className="text-sm text-neutral-400">
+              <div className="text-sm text-on-dark-soft">
                 قطع مرسيدس
               </div>
             </div>
 
           </div>
 
-          <p className="text-sm leading-7 text-neutral-400">
+          <p className="text-base leading-[1.8] text-on-dark-soft">
             متجر متخصص في بيع قطع مرسيدس الأصلية والمستعملة
             بجودة ممتازة وأسعار منافسة مع التوصيل إلى جميع أنحاء فلسطين.
           </p>
@@ -52,14 +52,14 @@ export default function Footer({ nav }: { nav: NavData }) {
         {/* links */}
         <div>
 
-          <h3 className="mb-4 text-lg font-extrabold">
+          <h3 className="mb-4 text-lg font-bold">
             روابط سريعة
           </h3>
 
-          <ul className="space-y-3 text-sm text-neutral-400">
+          <ul className="space-y-3 text-sm text-on-dark-soft">
             {links.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="hover:text-orange-500 transition">
+                <Link href={l.href} className="transition hover:text-on-dark">
                   {l.label}
                 </Link>
               </li>
@@ -72,11 +72,11 @@ export default function Footer({ nav }: { nav: NavData }) {
         {/* contact */}
         <div>
 
-          <h3 className="mb-4 text-lg font-extrabold">
+          <h3 className="mb-4 text-lg font-bold">
             تواصل معنا
           </h3>
 
-          <div className="space-y-3 text-sm text-neutral-400">
+          <div className="space-y-3 text-sm text-on-dark-soft">
 
             <p>
               {site.location}
@@ -90,7 +90,7 @@ export default function Footer({ nav }: { nav: NavData }) {
 
           {/* social icons */}
 
-          <div className="mt-6 flex gap-4">
+          <div className="mt-6 flex gap-2">
 
             {/* whatsapp */}
             <a
@@ -98,7 +98,7 @@ export default function Footer({ nav }: { nav: NavData }) {
               target="_blank"
               rel="noreferrer"
               aria-label="واتساب"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 hover:bg-orange-500 transition"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-dark-line bg-dark-raised text-on-dark transition hover:border-accent hover:bg-accent"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -116,7 +116,7 @@ export default function Footer({ nav }: { nav: NavData }) {
               target="_blank"
               rel="noreferrer"
               aria-label="فيسبوك"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 hover:bg-orange-500 transition"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-dark-line bg-dark-raised text-on-dark transition hover:border-accent hover:bg-accent"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -134,7 +134,7 @@ export default function Footer({ nav }: { nav: NavData }) {
               target="_blank"
               rel="noreferrer"
               aria-label="إنستغرام"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 hover:bg-orange-500 transition"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-dark-line bg-dark-raised text-on-dark transition hover:border-accent hover:bg-accent"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -154,7 +154,7 @@ export default function Footer({ nav }: { nav: NavData }) {
 
 
       {/* bottom */}
-      <div className="border-t border-neutral-800 py-4 text-center text-sm text-neutral-500">
+      <div className="border-t border-dark-line px-4 py-4 text-center text-sm text-on-dark-soft">
         © جميع الحقوق محفوظة - عبود عبد ربه
       </div>
 

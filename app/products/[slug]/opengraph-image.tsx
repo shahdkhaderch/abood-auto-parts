@@ -21,7 +21,8 @@ export const alt = `${site.name} - ${site.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const ORANGE = "#f97316";
+// Satori cannot read CSS variables: these mirror the @theme tokens in app/globals.css.
+const C = { dark: "#16181d", onDark: "#f2f3f5", onDarkSoft: "#a9afba", accent: "#e3262f", accentOnDark: "#ff6b71", card: "#ffffff" };
 const cwd = process.cwd();
 
 async function loadFonts() {
@@ -110,8 +111,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const brand = (
     <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", lineHeight: 1.25 }}>
-        <RtlText text={site.name} style={{ fontSize: 34, fontWeight: 900, color: "#fff" }} />
-        <RtlText text={site.tagline} style={{ fontSize: 22, fontWeight: 700, color: "rgba(255,255,255,0.65)" }} />
+        <RtlText text={site.name} style={{ fontSize: 34, fontWeight: 900, color: C.onDark }} />
+        <RtlText text={site.tagline} style={{ fontSize: 22, fontWeight: 700, color: C.onDarkSoft }} />
       </div>
       {logo && (
         // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- rendered by Satori, not the browser
@@ -125,22 +126,22 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   if (product && photo) {
     return new ImageResponse(
       (
-        <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: "#fff", fontFamily: "Cairo" }}>
+        <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: C.card, fontFamily: "Cairo" }}>
           {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
           <img src={photo} width={1200} height={480} style={{ position: "absolute", top: 0, left: 0, width: 1200, height: 480, objectFit: "contain" }} />
-          <div style={{ position: "absolute", top: 24, right: 28, display: "flex", alignItems: "center", gap: 12, padding: "6px 6px 6px 24px", borderRadius: 999, background: "rgba(10,10,10,0.72)", border: "2px solid rgba(255,255,255,0.2)", boxShadow: "0 4px 14px rgba(0,0,0,0.25)" }}>
-            <RtlText text={site.name} style={{ fontSize: 28, fontWeight: 900, color: "#fff" }} />
+          <div style={{ position: "absolute", top: 24, right: 28, display: "flex", alignItems: "center", gap: 12, padding: "6px 6px 6px 24px", borderRadius: 999, background: "rgba(22,24,29,0.75)", border: "2px solid rgba(255,255,255,0.2)", boxShadow: "0 4px 14px rgba(22,24,29,0.25)" }}>
+            <RtlText text={site.name} style={{ fontSize: 28, fontWeight: 900, color: C.onDark }} />
             {logo && (
               // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
               <img src={logo} width={56} height={56} style={{ borderRadius: 999, objectFit: "cover" }} />
             )}
           </div>
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 150, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", background: "#0a0a0a", borderTop: `6px solid ${ORANGE}` }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 18, fontSize: 52, fontWeight: 900, color: "#fff" }}>
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 150, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", background: C.dark, borderTop: `6px solid ${C.accent}` }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 18, fontSize: 52, fontWeight: 900, color: C.onDark }}>
               <span>{product.model}</span>
-              {product.chassis && <span style={{ color: ORANGE }}>{product.chassis}</span>}
+              {product.chassis && <span style={{ color: C.accentOnDark }}>{product.chassis}</span>}
             </div>
-            <div style={{ display: "flex", padding: "6px 26px", borderRadius: 999, color: "#fb923c", background: "rgba(249,115,22,0.15)", border: "2px solid rgba(249,115,22,0.4)" }}>
+            <div style={{ display: "flex", padding: "6px 26px", borderRadius: 999, color: C.accentOnDark, background: "rgba(227,38,47,0.15)", border: "2px solid rgba(227,38,47,0.45)" }}>
               <RtlText text={productLabel(product)} style={{ fontSize: 34, fontWeight: 900 }} />
             </div>
           </div>
@@ -160,17 +161,17 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           display: "flex",
           flexDirection: "column",
           padding: "44px 56px 40px",
-          color: "#fff",
+          color: C.onDark,
           fontFamily: "Cairo",
-          backgroundColor: "#0a0a0a",
-          backgroundImage: "radial-gradient(circle at 88% 12%, rgba(249,115,22,0.42), transparent 45%), radial-gradient(circle at 8% 100%, rgba(249,115,22,0.22), transparent 40%)",
-          borderBottom: `14px solid ${ORANGE}`,
+          backgroundColor: C.dark,
+          backgroundImage: "radial-gradient(circle at 88% 12%, rgba(227,38,47,0.32), transparent 45%), radial-gradient(circle at 8% 100%, rgba(227,38,47,0.16), transparent 40%)",
+          borderBottom: `14px solid ${C.accent}`,
         }}
       >
         {/* top: part type (left) + brand (right) */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           {product ? (
-            <div style={{ display: "flex", padding: "6px 26px", borderRadius: 999, color: "#fb923c", background: "rgba(249,115,22,0.15)", border: "2px solid rgba(249,115,22,0.4)" }}>
+            <div style={{ display: "flex", padding: "6px 26px", borderRadius: 999, color: C.accentOnDark, background: "rgba(227,38,47,0.15)", border: "2px solid rgba(227,38,47,0.45)" }}>
               <RtlText text={productLabel(product)} style={{ fontSize: 30, fontWeight: 900 }} />
             </div>
           ) : (
@@ -182,11 +183,11 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         {/* middle: icon + model/chassis */}
         <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 48 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 220, height: 220, borderRadius: 44, background: "rgba(255,255,255,0.05)", border: "2px solid rgba(255,255,255,0.12)" }}>
-            <PartIcon type={!product ? "other" : product.partType === "other" ? product.category : product.partType} size={160} color={ORANGE} strokeWidth={3} />
+            <PartIcon type={!product ? "other" : product.partType === "other" ? product.category : product.partType} size={160} color={C.accentOnDark} strokeWidth={3} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
             <div style={{ fontSize: 108, fontWeight: 900, letterSpacing: -2 }}>{product?.model || "Mercedes-Benz"}</div>
-            {product?.chassis && <div style={{ fontSize: 96, fontWeight: 900, color: ORANGE, letterSpacing: -2 }}>{product.chassis}</div>}
+            {product?.chassis && <div style={{ fontSize: 96, fontWeight: 900, color: C.accentOnDark, letterSpacing: -2 }}>{product.chassis}</div>}
           </div>
         </div>
 
@@ -194,7 +195,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div style={{ display: "flex", alignItems: "flex-end" }}>
           <RtlText
             text={product?.name ?? site.tagline}
-            style={{ flex: 1, fontSize: 42, fontWeight: 700, color: "rgba(255,255,255,0.9)", justifyContent: "flex-start", lineHeight: 1.3 }}
+            style={{ flex: 1, fontSize: 42, fontWeight: 700, color: C.onDark, justifyContent: "flex-start", lineHeight: 1.3 }}
           />
         </div>
       </div>

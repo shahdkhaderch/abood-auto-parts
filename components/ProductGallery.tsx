@@ -52,8 +52,8 @@ export default function ProductGallery({ photos, alt, className, fallback }: Pro
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className={`${className} bg-white`}>
+    <div className="flex flex-col gap-2">
+      <div className={`${className} bg-card`}>
         <div
           ref={trackRef}
           className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -97,8 +97,8 @@ export default function ProductGallery({ photos, alt, className, fallback }: Pro
               aria-label={`عرض الصورة ${ordinal(i)}`}
               onClick={() => goTo(i)}
               className={[
-                "relative h-16 w-16 overflow-hidden rounded-xl border bg-white transition sm:h-20 sm:w-20",
-                i === current ? "border-orange-500 ring-2 ring-orange-500/40" : "border-neutral-200 opacity-70 hover:opacity-100",
+                "relative h-16 w-16 overflow-hidden rounded-lg border bg-card transition sm:h-20 sm:w-20",
+                i === current ? "border-accent ring-2 ring-accent-ring" : "border-line opacity-70 hover:opacity-100",
               ].join(" ")}
             >
               <Image src={src} alt="" fill sizes="80px" className="object-contain p-1" />

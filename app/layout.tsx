@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -8,8 +8,13 @@ import { getNavData } from "@/lib/filters";
 import { getProducts } from "@/lib/products";
 import { site, siteUrl } from "@/lib/site";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+// Arabic-first typeface (also covers the Latin model names such as "C Class").
+const plexArabic = IBM_Plex_Sans_Arabic({
+  variable: "--font-plex-arabic",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -24,10 +29,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const nav = getNavData(await getProducts());
 
   return (
-    <html lang="ar" dir="rtl" className="bg-white">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-neutral-900`}>
+    <html lang="ar" dir="rtl" className={plexArabic.variable}>
+      <body className="bg-surface font-sans text-ink antialiased">
         <Navbar nav={nav} />
-        <div className="pb-24">{children}</div>
+        {children}
         <Footer nav={nav} />
         <MobileBottomNav />
       </body>
