@@ -5,6 +5,7 @@ import LoadMoreButton from "@/components/LoadMoreButton";
 import ProductCard from "@/components/ProductCard";
 import SearchForm from "@/components/SearchForm";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { btnPrimary, btnSecondary, card, chip, chipActive, chipIdle, panel } from "@/components/ui";
 import { applyFilters, getFacets, parseFilters, productsHref, SHOW_STEP, type ProductFilters } from "@/lib/filters";
 import { getProducts } from "@/lib/products";
 import { site, whatsappLink } from "@/lib/site";
@@ -26,8 +27,8 @@ function Chip({ href, active, label, ltr }: { href: string; active: boolean; lab
       prefetch={false}
       aria-current={active ? "true" : undefined}
       className={[
-        "inline-flex h-10 shrink-0 items-center rounded-lg border px-4 text-sm font-medium transition",
-        active ? "border-accent bg-accent font-bold text-card" : "border-line bg-card text-ink hover:border-line-strong hover:bg-surface",
+        chip,
+        active ? chipActive : chipIdle,
       ].join(" ")}
     >
       <span dir={ltr ? "ltr" : undefined}>{label}</span>
@@ -38,7 +39,7 @@ function Chip({ href, active, label, ltr }: { href: string; active: boolean; lab
 function FilterRow({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-4">
-      <div className="shrink-0 text-sm font-bold text-ink-soft sm:w-20 sm:pt-2">{title}</div>
+      <div className="shrink-0 text-sm font-bold text-ink sm:w-20 sm:pt-2">{title}</div>
       {/* Scrolls sideways on mobile, wraps on desktop */}
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">{children}</div>
     </div>
@@ -71,10 +72,10 @@ export default async function ProductsPage({ searchParams }: Props) {
       : (categoryLabel ?? "كل القطع");
 
   return (
-    <main className="min-h-screen bg-surface px-4 py-6 sm:px-6 sm:py-8">
+    <main className="min-h-screen bg-page px-4 py-6 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-6xl">
         <nav aria-label="مسار التنقل" className="mb-4 flex items-center gap-2 text-sm text-ink-soft">
-          <Link href="/" className="transition hover:text-accent-text">الرئيسية</Link>
+          <Link href="/" className="transition hover:text-ink hover:underline hover:decoration-accent hover:underline-offset-4">الرئيسية</Link>
           <span aria-hidden="true">‹</span>
           <span className="font-medium text-ink">القطع</span>
         </nav>
@@ -86,7 +87,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           <SearchForm keepFilters className="mb-4 max-w-2xl" />
         </Suspense>
 
-        <div className="mb-8 flex flex-col gap-4 rounded-xl border border-line bg-card p-4 shadow-xs">
+        <div className={`${panel} mb-8 flex flex-col gap-4 p-4`}>
           <FilterRow title="الموديل">
             <Chip href={with_({ model: "" })} active={!f.model} label="الكل" />
             {modelFacets.map((m) => (
@@ -104,10 +105,10 @@ export default async function ProductsPage({ searchParams }: Props) {
           )}
 
           {(hasFilters || f.q) && (
-            <div className="flex flex-wrap gap-4 border-t border-line pt-4 text-base font-bold">
-              {hasFilters && <Link href={productsHref({ q: f.q })} scroll={false} className="text-accent-text hover:underline">مسح الفلاتر</Link>}
-              {f.q && <Link href={productsHref({ ...f, q: "", show: SHOW_STEP })} scroll={false} className="text-accent-text hover:underline">مسح البحث</Link>}
-              {hasFilters && f.q && <Link href="/products" className="text-ink-soft hover:underline">مسح الكل</Link>}
+            <div className="flex flex-wrap gap-4 border-t border-line pt-4 text-base">
+              {hasFilters && <Link href={productsHref({ q: f.q })} scroll={false} className="font-bold text-ink underline decoration-accent decoration-2 underline-offset-4 hover:decoration-accent-hover">مسح الفلاتر</Link>}
+              {f.q && <Link href={productsHref({ ...f, q: "", show: SHOW_STEP })} scroll={false} className="font-bold text-ink underline decoration-accent decoration-2 underline-offset-4 hover:decoration-accent-hover">مسح البحث</Link>}
+              {hasFilters && f.q && <Link href="/products" className="text-ink-soft underline decoration-line decoration-2 underline-offset-4 hover:decoration-accent">مسح الكل</Link>}
             </div>
           )}
         </div>
@@ -122,15 +123,15 @@ export default async function ProductsPage({ searchParams }: Props) {
             {moreHref && <LoadMoreButton href={moreHref} />}
           </>
         ) : (
-          <div className="rounded-xl border border-dashed border-line-strong bg-card px-6 py-12 text-center">
+          <div className={`${card} px-6 py-12 text-center`}>
             <div className="text-4xl" aria-hidden="true">🔍</div>
             <p className="mt-4 text-lg font-bold text-ink">ما لقينا قطع مطابقة{f.q ? ` لـ «${f.q}»` : ""}</p>
             <p className="mx-auto mt-2 max-w-md text-base text-ink-soft">
               جرّب كلمة ثانية أو امسح الفلاتر. وإذا ما لقيت اللي بدك إياه، ابعتلنا على واتساب وبنساعدك تلاقيها.
             </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
               {(hasFilters || f.q) && (
-                <Link href="/products" className="inline-flex h-12 items-center rounded-xl border border-line-strong bg-card px-6 text-base font-bold text-ink transition hover:bg-surface">
+                <Link href="/products" className={btnSecondary}>
                   عرض كل القطع
                 </Link>
               )}
@@ -138,7 +139,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                 href={whatsappLink(f.q ? `مرحبا، بدور على قطعة: ${f.q}` : undefined)}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-12 items-center gap-2 rounded-xl bg-whatsapp px-6 text-base font-bold text-ink transition hover:bg-whatsapp-hover"
+                className={btnPrimary}
               >
                 <WhatsAppIcon />
                 اسألنا على واتساب

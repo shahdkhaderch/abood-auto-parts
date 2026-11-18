@@ -31,10 +31,10 @@ function NavItem({ href, label, active, children }:{ href:string; label:string; 
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={["relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition active:scale-95", active ? "text-on-dark" : "text-on-dark-soft"].join(" ")}
+      className={["relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition active:scale-95", active ? "text-ink" : "text-ink-soft"].join(" ")}
     >
-      {active ? <span className="absolute top-0 h-0.5 w-10 rounded-full bg-accent" /> : null}
-      {children}
+      {active ? <span className="absolute top-0 h-1 w-10 rounded-ui bg-accent" /> : null}
+      <span className={["flex h-8 w-12 items-center justify-center rounded-ui transition", active ? "bg-accent-tint" : ""].join(" ")}>{children}</span>
       <span className={["text-sm", active ? "font-bold" : "font-medium"].join(" ")}>{label}</span>
     </Link>
   );
@@ -47,7 +47,7 @@ export default function MobileBottomNav() {
   const isFavorites = pathname.startsWith("/favorites");
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-dark-line bg-dark shadow-lg sm:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-card/95 backdrop-blur-md sm:hidden">
       <div className="grid grid-cols-3 pb-[max(env(safe-area-inset-bottom),4px)]">
         <NavItem href="/" label="الرئيسية" active={isHome}><IconHome /></NavItem>
         <NavItem href="/products" label="القطع" active={isProducts}><IconGrid /></NavItem>

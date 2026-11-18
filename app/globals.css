@@ -1,88 +1,66 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — the only place colours are defined for the site.
- * Components use the generated utilities (bg-surface, text-ink, border-line, bg-accent …),
- * never raw hex values or Tailwind's default palette.
- * (The generated WhatsApp preview image, app/products/[slug]/opengraph-image.tsx, cannot read
- * CSS variables and mirrors these values in its own constant block.)
+ * Design tokens: the ONLY colours on the site. Tailwind's default palette (and its black/white)
+ * is switched off below, so a default-palette class (black, orange-500 …) does not exist and
+ * cannot sneak back in. The generated WhatsApp preview (app/products/[slug]/opengraph-image.tsx)
+ * cannot read CSS variables and repeats these same values in one constant block.
  *
- * Contrast (WCAG AA, checked):
- *   ink on surface 15.6:1 · ink-soft on surface 5.7:1 · ink-soft on card 6.1:1
- *   on-dark on dark 15.9:1 · on-dark-soft on dark 8.0:1 · on-dark-soft on dark-raised 7.2:1
- *   white on accent 4.6:1 · white on accent-hover 5.7:1 · accent-text on surface 5.3:1
- *   ink on whatsapp 8.6:1 (white on WhatsApp green is only 2:1, so its label is dark)
+ * Rules: no dark backgrounds, no black, no red, no other accents.
+ * Orange is never used for text (it is too light to read); text on orange is ink.
  */
 @theme {
-  /* Dark surfaces: header, footer, mobile bottom bar */
-  --color-dark: #16181d;
-  --color-dark-raised: #1f2229;
-  --color-dark-line: #2c3039;
-  --color-on-dark: #f2f3f5;
-  --color-on-dark-soft: #a9afba;
+  --color-*: initial;
 
-  /* Light content surfaces: page background, cards, borders */
-  --color-surface: #f6f7f9;
-  --color-card: #ffffff;
-  --color-line: #e4e7ec;
-  --color-line-strong: #cfd4dc;
+  --color-page: #fafaf8; /* page background (warm white) */
+  --color-card: #ffffff; /* cards, surfaces */
+  --color-soft: #f3f3f1; /* alternate sections, inputs, filters, footer */
+  --color-line: #e8e6e3; /* borders, dividers */
+  --color-ink: #33363b; /* main text (dark grey, never black) */
+  --color-ink-soft: #73777f; /* secondary text */
+  --color-accent: #f4b183; /* soft orange: buttons, highlights */
+  --color-accent-hover: #eda06c; /* hover / active */
+  --color-accent-tint: #fff5ee; /* chips, selected states, light highlights */
 
-  /* Text on light */
-  --color-ink: #1a1d23;
-  --color-ink-soft: #5b6270;
+  /* One radius, one shadow (plus its hover lift) for every component. Shadows are ink-tinted, never black. */
+  --radius-ui: 14px;
+  --shadow-*: initial;
+  --shadow-soft: 0 1px 2px rgb(51 54 59 / 0.04), 0 4px 16px -4px rgb(51 54 59 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(51 54 59 / 0.04), 0 12px 28px -8px rgb(51 54 59 / 0.1);
 
-  /* Accent red — primary buttons, active filter, key highlights only */
-  --color-accent: #e3262f;
-  --color-accent-hover: #c81e26;
-  --color-accent-text: #c81e26; /* red text on light surfaces (plain accent is under 4.5:1 on surface) */
-  --color-accent-soft: #fdeced; /* tint behind red text: chips, badges */
-  --color-accent-ring: #f6b3b6;
-
-  /* WhatsApp keeps its own green so the button is instantly recognisable */
-  --color-whatsapp: #25d366;
-  --color-whatsapp-hover: #1ebe5b;
-
-  /* Typography */
   --font-sans: var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
-
-  /* Shadows tinted with the charcoal token instead of pure black */
-  --shadow-xs: 0 1px 2px rgb(22 24 29 / 0.05);
-  --shadow-sm: 0 1px 3px rgb(22 24 29 / 0.06), 0 1px 2px rgb(22 24 29 / 0.04);
-  --shadow-md: 0 8px 24px -6px rgb(22 24 29 / 0.12), 0 2px 6px rgb(22 24 29 / 0.05);
-  --shadow-lg: 0 16px 40px -12px rgb(22 24 29 / 0.18), 0 4px 10px rgb(22 24 29 / 0.05);
-  --shadow-xl: 0 24px 56px -16px rgb(22 24 29 / 0.22);
-  --shadow-2xl: 0 32px 72px -20px rgb(22 24 29 / 0.28);
 }
 
-/* Base styles live in the base layer so Tailwind utilities (leading-*, text-*) can override them. */
+/* Base styles stay in the base layer so Tailwind utilities (leading-*, text-*) can override them. */
 @layer base {
   html {
-    background: var(--color-surface);
+    background: var(--color-page);
     color: var(--color-ink);
     -webkit-text-size-adjust: 100%;
   }
 
   body {
     font-family: var(--font-sans);
-    font-size: 1rem; /* 16px minimum for body text */
+    font-size: 1rem; /* 16px body */
     line-height: 1.7;
-    background: var(--color-surface);
+    background: var(--color-page);
     color: var(--color-ink);
   }
 
   h1,
   h2,
   h3 {
-    line-height: 1.35;
+    line-height: 1.4;
   }
 
   ::selection {
-    background: var(--color-accent-soft);
+    background: var(--color-accent-tint);
     color: var(--color-ink);
   }
 
+  /* Keyboard focus: ink outline (the soft orange is too light to be a visible focus indicator). */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
 }

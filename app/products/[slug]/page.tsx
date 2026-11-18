@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ProductImage from "@/components/ProductImage";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { btnPrimaryLg, card, tag, textLink } from "@/components/ui";
 import { CATEGORY_LABELS, PART_TYPE_LABELS, productLabel, type Product } from "@/lib/catalog";
 import { OFFER_LABEL, productsHref } from "@/lib/filters";
 import { getProductBySlug, getProducts } from "@/lib/products";
@@ -61,12 +62,12 @@ export default async function ProductPage({ params }: Props) {
   ].filter((d) => d.values.length > 0);
 
   return (
-    <main className="min-h-screen bg-surface px-4 py-6 sm:px-6 sm:py-10">
+    <main className="min-h-screen bg-page px-4 py-6 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-6xl">
         <nav aria-label="مسار التنقل" className="mb-6 flex min-w-0 items-center gap-2 text-sm text-ink-soft">
-          <Link href="/" className="shrink-0 transition hover:text-accent-text">الرئيسية</Link>
+          <Link href="/" className="shrink-0 transition hover:text-ink hover:underline hover:decoration-accent hover:underline-offset-4">الرئيسية</Link>
           <span aria-hidden="true">‹</span>
-          <Link href="/products" className="shrink-0 transition hover:text-accent-text">القطع</Link>
+          <Link href="/products" className="shrink-0 transition hover:text-ink hover:underline hover:decoration-accent hover:underline-offset-4">القطع</Link>
           <span aria-hidden="true">‹</span>
           <span className="truncate font-medium text-ink">{productLabel(product)}</span>
         </nav>
@@ -76,25 +77,25 @@ export default async function ProductPage({ params }: Props) {
 
           <div className="flex flex-col">
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex w-fit rounded-md bg-card px-3 py-1 text-sm font-bold text-ink-soft ring-1 ring-line">
+              <span className={tag}>
                 {productLabel(product)}
               </span>
               {product.onOffer && (
-                <Link href={productsHref({ offer: true })} className="inline-flex w-fit rounded-md bg-accent px-3 py-1 text-sm font-bold text-card transition hover:bg-accent-hover">
+                <Link href={productsHref({ offer: true })} className="inline-flex w-fit items-center rounded-ui bg-accent px-3 py-0.5 text-sm font-bold leading-6 text-ink transition hover:bg-accent-hover">
                   {OFFER_LABEL}
                 </Link>
               )}
             </div>
             <h1 className="mt-4 text-2xl font-bold leading-[1.45] text-ink sm:text-3xl lg:text-4xl">{product.name}</h1>
 
-            <dl className="mt-6 divide-y divide-line overflow-hidden rounded-xl border border-line bg-card shadow-xs">
+            <dl className={`${card} mt-6 divide-y divide-line overflow-hidden`}>
               {details.map((d) => (
                 <div key={d.label} className="flex items-center justify-between gap-4 px-4 py-3">
                   <dt className="text-base text-ink-soft">{d.label}</dt>
                   <dd dir={d.ltr ? "ltr" : undefined} className="flex flex-wrap justify-end gap-x-3 gap-y-1 text-base font-bold text-ink">
                     {d.values.map((v) =>
                       v.href ? (
-                        <Link key={v.text} href={v.href} className="text-accent-text underline decoration-accent-ring underline-offset-4 hover:text-accent-hover hover:decoration-accent-text">
+                        <Link key={v.text} href={v.href} className={textLink}>
                           {v.text}
                         </Link>
                       ) : (
@@ -110,7 +111,7 @@ export default async function ProductPage({ params }: Props) {
               href={productWhatsAppLink(product)}
               target="_blank"
               rel="noreferrer"
-              className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-whatsapp px-4 text-lg font-bold text-ink shadow-md transition hover:bg-whatsapp-hover active:scale-[0.99]"
+              className={`${btnPrimaryLg} mt-6 w-full shadow-soft`}
             >
               <WhatsAppIcon size={24} />
               استفسر عن هالقطعة على واتساب

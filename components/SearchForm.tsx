@@ -2,6 +2,7 @@
 
 import Form from "next/form";
 import { usePathname, useSearchParams } from "next/navigation";
+import { input } from "@/components/ui";
 
 type Props = {
   /** Keep the current model/type/category/offer filters (used on /products). */
@@ -53,11 +54,11 @@ export default function SearchForm({ keepFilters = false, autoFocus = false, onS
         enterKeyHint="search"
         autoComplete="off"
         placeholder="ابحث باسم القطعة أو الموديل..."
-        className="h-11 w-full rounded-xl border border-line bg-card pr-10 pl-20 text-base text-ink outline-none transition placeholder:text-ink-soft focus:border-accent focus:ring-2 focus:ring-accent-ring"
+        className={`${input} pr-11 pl-20`}
       />
       <button
         type="submit"
-        className="absolute inset-y-1 left-1 rounded-lg bg-accent px-4 text-sm font-bold text-card transition hover:bg-accent-hover"
+        className="absolute inset-y-1.5 left-1.5 rounded-ui bg-accent px-4 text-sm font-bold text-ink transition hover:bg-accent-hover"
       >
         بحث
       </button>

@@ -2,6 +2,8 @@ import Link from "next/link";
 import A1Hero from "@/components/A1Hero";
 import LoadMoreButton from "@/components/LoadMoreButton";
 import ProductCard from "@/components/ProductCard";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { btnPrimary, card } from "@/components/ui";
 import { parseShow, SHOW_STEP } from "@/lib/filters";
 import { getProducts } from "@/lib/products";
 import { whatsappLink } from "@/lib/site";
@@ -18,7 +20,7 @@ export default async function Home({ searchParams }: Props) {
   const moreHref = products.length > show ? `/?show=${show + SHOW_STEP}` : null;
 
   return (
-    <main className="min-h-screen bg-surface px-4 py-4 sm:px-6 sm:py-6">
+    <main className="min-h-screen bg-page px-4 py-4 sm:px-6 sm:py-6">
       <A1Hero />
 
       <section id="products" className="mx-auto mt-10 max-w-6xl scroll-mt-32 sm:mt-16">
@@ -28,7 +30,7 @@ export default async function Home({ searchParams }: Props) {
             <p className="mt-1 text-base text-ink-soft">اختر القطعة واستفسر عنها مباشرة عبر واتساب</p>
           </div>
           {products.length > 0 && (
-            <Link href="/products" className="shrink-0 rounded-lg px-2 py-1 text-base font-bold text-accent-text transition hover:bg-accent-soft">
+            <Link href="/products" className="shrink-0 rounded-ui border border-line bg-card px-4 py-1 text-sm font-bold text-ink transition hover:border-accent hover:bg-accent-tint">
               عرض كل القطع ‹
             </Link>
           )}
@@ -44,15 +46,16 @@ export default async function Home({ searchParams }: Props) {
             {moreHref && <LoadMoreButton href={moreHref} />}
           </>
         ) : (
-          <div className="rounded-xl border border-dashed border-line-strong bg-card p-8 text-center">
+          <div className={`${card} p-8 text-center`}>
             <p className="font-bold text-ink">القطع غير متوفرة حالياً على الموقع.</p>
             <p className="mt-1 text-base text-ink-soft">تواصل معنا على واتساب وبنساعدك تلاقي القطعة.</p>
             <a
               href={whatsappLink()}
               target="_blank"
               rel="noreferrer"
-              className="mt-4 inline-flex h-12 items-center justify-center rounded-xl bg-whatsapp px-6 text-base font-bold text-ink transition hover:bg-whatsapp-hover"
+              className={`${btnPrimary} mt-4`}
             >
+              <WhatsAppIcon />
               تواصل واتساب
             </a>
           </div>

@@ -2,6 +2,7 @@ import Image from "next/image";
 import PartIcon from "@/components/PartIcon";
 import ProductGallery from "@/components/ProductGallery";
 import ProductPhoto from "@/components/ProductPhoto";
+import { tag } from "@/components/ui";
 import { productLabel, type Product } from "@/lib/catalog";
 import { getProductPhotos } from "@/lib/product-images";
 import { site } from "@/lib/site";
@@ -18,35 +19,33 @@ export default function ProductImage({ product, variant = "card", priority = fal
   const isPage = variant === "page";
   const frame = [
     "relative w-full overflow-hidden",
-    isPage ? "aspect-square rounded-xl border border-line" : "aspect-[4/3]",
+    isPage ? "aspect-square rounded-ui border border-line shadow-soft" : "aspect-[4/3]",
   ].join(" ");
 
-  // Light placeholder so a grid with many photo-less parts stays calm to browse.
+  // Light placeholder on the soft surface, so a grid with many photo-less parts stays calm.
   const placeholder = (
-    <div className={`${frame} bg-surface text-ink`} role="img" aria-label={product.name}>
+    <div className={`${frame} bg-soft text-ink`} role="img" aria-label={product.name}>
       <div className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
 
       <div className={["relative flex h-full flex-col", isPage ? "p-6 sm:p-8" : "p-3 sm:p-4"].join(" ")}>
-        {/* top row: brand + part type */}
+        {/* top row: brand (+ label on the product page) */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
             <Image
-              src="/abood-logo.png"
+              src="/abood-mark.png"
               alt=""
-              width={isPage ? 48 : 24}
-              height={isPage ? 48 : 24}
-              className={["shrink-0 rounded-lg object-cover", isPage ? "h-12 w-12" : "h-6 w-6"].join(" ")}
+              width={isPage ? 48 : 28}
+              height={isPage ? 48 : 28}
+              className={["shrink-0 object-contain", isPage ? "h-12 w-12" : "h-7 w-7"].join(" ")}
             />
             <span className={["truncate font-medium text-ink-soft", isPage ? "text-base" : "hidden text-sm sm:inline"].join(" ")}>{site.name}</span>
           </div>
-          {isPage && (
-            <span className="shrink-0 rounded-md bg-card px-3 py-1 text-sm font-bold text-ink-soft ring-1 ring-line">{productLabel(product)}</span>
-          )}
+          {isPage && <span className={tag}>{productLabel(product)}</span>}
         </div>
 
         {/* center: icon + model/chassis */}
         <div className="flex flex-1 items-center justify-center gap-3 sm:gap-4">
-          <div className={["flex shrink-0 items-center justify-center rounded-xl bg-card text-accent-text ring-1 ring-line", isPage ? "h-24 w-24 sm:h-28 sm:w-28" : "h-12 w-12 sm:h-14 sm:w-14"].join(" ")}>
+          <div className={["flex shrink-0 items-center justify-center rounded-ui border border-line bg-card text-accent-hover shadow-soft", isPage ? "h-24 w-24 sm:h-28 sm:w-28" : "h-12 w-12 sm:h-14 sm:w-14"].join(" ")}>
             <PartIcon type={product.partType === "other" ? product.category : product.partType} size={isPage ? 72 : 32} strokeWidth={2.5} />
           </div>
           <div dir="ltr" className="min-w-0 text-left leading-tight">
@@ -54,7 +53,7 @@ export default function ProductImage({ product, variant = "card", priority = fal
               <div className={["truncate font-bold tracking-tight text-ink", isPage ? "text-4xl sm:text-5xl" : "text-base sm:text-xl"].join(" ")}>{product.model}</div>
             )}
             {product.chassis && (
-              <div className={["font-bold tracking-tight text-accent-text", isPage ? "mt-1 text-3xl sm:text-4xl" : "text-sm sm:text-lg"].join(" ")}>{product.chassis}</div>
+              <div className={["mt-1 inline-block rounded-ui bg-accent-tint font-bold tracking-tight text-ink", isPage ? "px-3 text-3xl sm:text-4xl" : "px-2 text-sm sm:text-base"].join(" ")}>{product.chassis}</div>
             )}
           </div>
         </div>

@@ -5,6 +5,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
 import SearchForm from "@/components/SearchForm";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { btnPrimary, btnPrimarySm, card, iconBtn } from "@/components/ui";
 import { OFFER_LABEL, productsHref, type NavData } from "@/lib/filters";
 import { site, whatsappLink } from "@/lib/site";
 
@@ -15,6 +16,11 @@ function IconMinus(){return(<svg width="18" height="18" viewBox="0 0 24 24" fill
 function IconClose(){return(<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>);}
 function ChevronLeft(){return(<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 7l-5 5 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>);}
 function ChevronDown(){return(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 10l5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>);}
+
+/** The brand mark (light circle, transparent corners), used wherever the logo appears. */
+function Mark({ size }: { size: number }) {
+  return <Image src="/abood-mark.png" alt="" width={size} height={size} priority className="shrink-0 object-contain" style={{ width: size, height: size }} />;
+}
 
 export default function Navbar({ nav }: { nav: NavData }){
   const [drawerOpen,setDrawerOpen]=useState(false),[mobileMercedesOpen,setMobileMercedesOpen]=useState(false),[desktopMercedesOpen,setDesktopMercedesOpen]=useState(false);
@@ -30,21 +36,20 @@ export default function Navbar({ nav }: { nav: NavData }){
   useEffect(()=>{document.body.style.overflow=drawerOpen?"hidden":"";return()=>{document.body.style.overflow="";};},[drawerOpen]);
   useEffect(()=>{function onDocClick(e:MouseEvent){if(!desktopMercedesOpen)return;const t=e.target as Node;if(mercedesRef.current&&!mercedesRef.current.contains(t))setDesktopMercedesOpen(false);}document.addEventListener("mousedown",onDocClick);return()=>document.removeEventListener("mousedown",onDocClick);},[desktopMercedesOpen]);
 
-  const barLink = "inline-flex h-10 items-center gap-1 whitespace-nowrap rounded-lg px-3 text-sm font-medium text-on-dark-soft transition hover:bg-dark-line hover:text-on-dark";
-  const quickLink = "inline-flex items-center rounded-lg border border-line bg-card px-4 py-2 text-sm font-medium text-ink transition hover:border-line-strong hover:bg-surface";
-  const drawerLink = "flex items-center justify-between rounded-xl border border-line bg-card px-4 py-3 text-base font-medium text-ink transition hover:bg-surface active:scale-[0.995]";
-  const iconBtn = "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-dark-line bg-dark-raised text-on-dark transition hover:border-on-dark-soft active:scale-95";
+  const barLink = "inline-flex h-10 items-center gap-1 whitespace-nowrap rounded-ui px-3 text-sm font-medium text-ink transition hover:bg-accent-tint";
+  const quickLink = "inline-flex items-center rounded-ui border border-line bg-card px-4 py-2 text-sm font-medium text-ink transition hover:border-accent hover:bg-accent-tint";
+  const drawerLink = `${card} flex items-center justify-between px-4 py-3 text-base font-medium text-ink transition hover:border-accent hover:bg-accent-tint`;
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-dark-line bg-dark text-on-dark">
+      <header className="sticky top-0 z-50 w-full border-b border-line bg-card/95 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex h-16 items-center gap-2 sm:gap-4">
             <button type="button" onClick={()=>setDrawerOpen(true)} className={`${iconBtn} lg:hidden`} aria-label="فتح القائمة" aria-expanded={drawerOpen}><IconMenu /></button>
 
             <Link href="/" className="flex shrink-0 items-center gap-2" aria-label={`${site.name} - الرئيسية`}>
-              <Image src="/abood-logo.png" alt={site.name} width={44} height={44} priority className="h-11 w-11 rounded-xl object-cover"/>
-              <div className="hidden leading-tight md:block"><div className="text-base font-bold text-on-dark">{site.name}</div><div className="text-sm text-on-dark-soft">{site.tagline}</div></div>
+              <Mark size={44} />
+              <div className="hidden leading-tight md:block"><div className="text-base font-bold text-ink">{site.name}</div><div className="text-sm text-ink-soft">{site.tagline}</div></div>
             </Link>
 
             <div className="hidden flex-1 sm:block">
@@ -52,7 +57,7 @@ export default function Navbar({ nav }: { nav: NavData }){
             </div>
 
             <div className="ms-auto flex items-center gap-2 sm:ms-0">
-              <a href={whatsappHref} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-whatsapp px-4 text-sm font-bold text-ink transition hover:bg-whatsapp-hover active:scale-95"><WhatsAppIcon />واتساب</a>
+              <a href={whatsappHref} target="_blank" rel="noreferrer" className={btnPrimarySm}><WhatsAppIcon />واتساب</a>
               <Link href="/favorites" className={`${iconBtn} hidden sm:inline-flex`} aria-label="المفضلة"><IconHeart /></Link>
             </div>
           </div>
@@ -63,15 +68,15 @@ export default function Navbar({ nav }: { nav: NavData }){
           </div>
         </div>
 
-        <div className="hidden border-t border-dark-line bg-dark-raised lg:block">
+        <div className="hidden border-t border-line lg:block">
           <div className="mx-auto max-w-6xl px-4">
             <div className="relative flex items-center gap-1 py-1">
               {nav.models.length > 0 && (
                 <div ref={mercedesRef} className="relative">
-                  <button type="button" onClick={()=>setDesktopMercedesOpen(true)} onMouseEnter={()=>setDesktopMercedesOpen(true)} className={`${barLink} text-on-dark`} aria-expanded={desktopMercedesOpen} aria-haspopup="true">مرسيدس <ChevronDown /></button>
+                  <button type="button" onClick={()=>setDesktopMercedesOpen(true)} onMouseEnter={()=>setDesktopMercedesOpen(true)} className={`${barLink} font-bold`} aria-expanded={desktopMercedesOpen} aria-haspopup="true">مرسيدس <ChevronDown /></button>
 
-                  <div onMouseLeave={()=>setDesktopMercedesOpen(false)} onKeyDown={(e)=>{if(e.key==="Escape")setDesktopMercedesOpen(false);}} className={["absolute right-0 top-full mt-2 w-[720px] overflow-hidden rounded-xl border border-line bg-card text-ink shadow-xl transition-all duration-200",desktopMercedesOpen?"pointer-events-auto translate-y-0 opacity-100":"pointer-events-none invisible -translate-y-2 opacity-0"].join(" ")}>
-                    <div className="flex items-center justify-between border-b border-line bg-surface px-6 py-4">
+                  <div onMouseLeave={()=>setDesktopMercedesOpen(false)} onKeyDown={(e)=>{if(e.key==="Escape")setDesktopMercedesOpen(false);}} className={[`absolute right-0 top-full mt-2 w-[720px] overflow-hidden ${card} shadow-lift transition-all duration-200`,desktopMercedesOpen?"pointer-events-auto translate-y-0 opacity-100":"pointer-events-none invisible -translate-y-2 opacity-0"].join(" ")}>
+                    <div className="flex items-center justify-between border-b border-line bg-soft px-6 py-4">
                       <div className="text-base font-bold text-ink">موديلات مرسيدس</div>
                       <div className="text-sm text-ink-soft">اختر الموديل</div>
                     </div>
@@ -79,14 +84,14 @@ export default function Navbar({ nav }: { nav: NavData }){
                     <div className="p-4">
                       <div className="grid grid-cols-3 gap-2">
                         {nav.models.map((m)=>(
-                          <Link key={m.value} href={productsHref({ model: m.value })} prefetch={false} onClick={()=>setDesktopMercedesOpen(false)} className="group flex items-center justify-between gap-2 rounded-lg border border-line bg-card px-4 py-2 text-base font-medium text-ink transition hover:border-line-strong hover:bg-surface">
+                          <Link key={m.value} href={productsHref({ model: m.value })} prefetch={false} onClick={()=>setDesktopMercedesOpen(false)} className="group flex items-center justify-between gap-2 rounded-ui border border-line bg-card px-4 py-2 text-base font-medium text-ink transition hover:border-accent hover:bg-accent-tint">
                             <span dir="ltr">{m.label}</span>
-                            <span className="text-line-strong transition group-hover:text-accent-text"><ChevronLeft /></span>
+                            <span className="text-ink-soft transition group-hover:text-ink"><ChevronLeft /></span>
                           </Link>
                         ))}
                       </div>
 
-                      <div className="mt-4 rounded-xl border border-line bg-surface p-4">
+                      <div className="mt-4 rounded-ui border border-line bg-soft p-4">
                         <div className="text-sm font-bold text-ink">روابط سريعة</div>
                         <div className="mt-2 flex flex-wrap gap-2">
                           <Link href="/products" onClick={()=>setDesktopMercedesOpen(false)} className={quickLink}>كل القطع</Link>
@@ -110,18 +115,19 @@ export default function Navbar({ nav }: { nav: NavData }){
       </header>
 
       <div className={["fixed inset-0 z-50 transition",drawerOpen?"pointer-events-auto opacity-100":"pointer-events-none opacity-0"].join(" ")} aria-hidden={!drawerOpen} inert={!drawerOpen}>
-        <div className={["absolute inset-0 bg-dark/60 transition-opacity",drawerOpen?"opacity-100":"opacity-0"].join(" ")} onClick={closeAll}/>
-        <div className={["absolute right-0 top-0 flex h-full w-[86%] max-w-sm flex-col overflow-y-auto bg-surface shadow-2xl transition-transform duration-300",drawerOpen?"translate-x-0":"translate-x-full"].join(" ")} role="dialog" aria-modal="true" aria-label="القائمة">
-          <div className="shrink-0 bg-dark px-4 pb-4 pt-4 text-on-dark">
+        {/* Light frosted scrim (no dark overlay). */}
+        <div className={["absolute inset-0 bg-soft/70 backdrop-blur-sm transition-opacity",drawerOpen?"opacity-100":"opacity-0"].join(" ")} onClick={closeAll}/>
+        <div className={["absolute right-0 top-0 flex h-full w-[86%] max-w-sm flex-col overflow-y-auto border-l border-line bg-page shadow-lift transition-transform duration-300",drawerOpen?"translate-x-0":"translate-x-full"].join(" ")} role="dialog" aria-modal="true" aria-label="القائمة">
+          <div className="shrink-0 border-b border-line bg-card px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Image src="/abood-logo.png" alt={site.name} width={48} height={48} className="h-12 w-12 rounded-xl object-cover"/>
-                <div className="leading-tight"><div className="text-base font-bold text-on-dark">{site.name}</div><div className="text-sm text-on-dark-soft">{site.tagline}</div></div>
+                <Mark size={48} />
+                <div className="leading-tight"><div className="text-base font-bold text-ink">{site.name}</div><div className="text-sm text-ink-soft">{site.tagline}</div></div>
               </div>
               <button type="button" onClick={closeAll} className={iconBtn} aria-label="إغلاق"><IconClose /></button>
             </div>
 
-            <a href={whatsappHref} target="_blank" rel="noreferrer" className="mt-4 flex h-12 items-center justify-center gap-2 rounded-xl bg-whatsapp px-4 text-base font-bold text-ink transition hover:bg-whatsapp-hover active:scale-[0.99]"><WhatsAppIcon size={20} />تواصل واتساب الآن</a>
+            <a href={whatsappHref} target="_blank" rel="noreferrer" className={`${btnPrimary} mt-4 w-full`}><WhatsAppIcon size={20} />تواصل واتساب الآن</a>
           </div>
 
           <nav className="px-4 py-4">
@@ -132,12 +138,12 @@ export default function Navbar({ nav }: { nav: NavData }){
                 </button>
 
                 <div className={["overflow-hidden transition-all duration-300",mobileMercedesOpen?"mt-2 max-h-[560px]":"max-h-0"].join(" ")}>
-                  <div className="rounded-xl border border-line bg-card p-2">
+                  <div className="rounded-ui border border-line bg-card p-2">
                     <div className="max-h-[420px] overflow-auto">
                       {nav.models.map((m)=>(
-                        <Link key={m.value} href={productsHref({ model: m.value })} prefetch={false} onClick={closeAll} className="group flex items-center justify-between rounded-lg px-4 py-2 text-base font-medium text-ink transition hover:bg-surface">
+                        <Link key={m.value} href={productsHref({ model: m.value })} prefetch={false} onClick={closeAll} className="group flex items-center justify-between rounded-ui px-4 py-2 text-base font-medium text-ink transition hover:bg-accent-tint">
                           <span dir="ltr">{m.label}</span>
-                          <span className="text-line-strong transition group-hover:text-accent-text"><ChevronLeft/></span>
+                          <span className="text-ink-soft transition group-hover:text-ink"><ChevronLeft/></span>
                         </Link>
                       ))}
                     </div>
@@ -155,7 +161,7 @@ export default function Navbar({ nav }: { nav: NavData }){
             </div>
 
             <div className="mt-4">
-              <Link href="/favorites" onClick={closeAll} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-line-strong bg-card text-base font-bold text-ink transition hover:bg-surface active:scale-[0.99]"><IconHeart />المفضلة</Link>
+              <Link href="/favorites" onClick={closeAll} className={`${card} flex items-center justify-center gap-2 px-4 py-3 text-base font-bold text-ink transition hover:border-accent hover:bg-accent-tint`}><IconHeart />المفضلة</Link>
             </div>
           </nav>
 
