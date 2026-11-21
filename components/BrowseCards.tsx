@@ -25,7 +25,9 @@ function Chevron() {
  * Row of dark browse cards (categories, models): image on top, name bottom-right, small round
  * chevron button bottom-left. Scrolls sideways on phones; a grid from 768px (`gridCols` sets the columns).
  */
-export default function BrowseCards({ items, gridCols, sizes }: { items: BrowseItem[]; gridCols: string; sizes: string }) {
+export default function BrowseCards({ items, gridCols, sizes, eager = false }: { items: BrowseItem[]; gridCols: string; sizes: string; eager?: boolean }) {
+  // eager: the first row just under the hero (categories). Loaded right away, and the intro overlay waits for them
+  // (data-intro-wait, see IntroSplash), so they are already there when the site appears. Other rows stay lazy.
   return (
     <div className={`-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:gap-4 md:mx-0 md:grid md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden ${gridCols}`}>
       {items.map((item) => (
@@ -37,7 +39,7 @@ export default function BrowseCards({ items, gridCols, sizes }: { items: BrowseI
         >
           <div className={["relative aspect-[4/3] overflow-hidden rounded-[10px]", item.image ? "bg-header" : "bg-white"].join(" ")}>
             {item.image ? (
-              <Image src={item.image} alt="" fill sizes={sizes} className="object-cover object-center transition duration-500 group-hover:scale-105" />
+              <Image src={item.image} alt="" fill sizes={sizes} loading={eager ? "eager" : "lazy"} data-intro-wait={eager ? "" : undefined} className="object-cover object-center transition duration-500 group-hover:scale-105" />
             ) : (
               <div className="flex h-full items-center justify-center text-ink">{item.fallback}</div>
             )}

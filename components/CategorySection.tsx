@@ -16,6 +16,7 @@ export default function CategorySection({ categories }: { categories: Facet[] })
       <div className="mx-auto max-w-7xl px-4 lg:px-6">
         <SectionTitle id="categories-title" label="Shop by category" title="تصفح حسب الفئة" />
         <BrowseCards
+          eager
           gridCols="md:grid-cols-3 lg:grid-cols-6"
           sizes="(min-width: 1024px) 16vw, (min-width: 768px) 30vw, 42vw"
           items={categories.map((c) => ({

@@ -39,8 +39,8 @@ export default async function Home({ searchParams }: Props) {
           {products.length > 0 ? (
             <>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-6">
-                {products.slice(0, show).map((p, i) => (
-                  <ProductCard key={p.slug} product={p} priority={i < 4} />
+                {products.slice(0, show).map((p) => (
+                  <ProductCard key={p.slug} product={p} />
                 ))}
               </div>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

@@ -105,7 +105,7 @@ export default function Navbar({ nav }: { nav: NavData }){
             </nav>
 
             {showHeaderSearch ? (
-              <div className="hidden min-w-0 flex-1 sm:block lg:max-w-sm"><Suspense fallback={null}><SearchForm /></Suspense></div>
+              <div className="hidden min-w-0 flex-1 sm:block lg:max-w-sm"><Suspense fallback={<div className="h-12" aria-hidden="true" />}><SearchForm /></Suspense></div>
             ) : (
               <div className="hidden flex-1 sm:block lg:max-w-sm" />
             )}
@@ -119,7 +119,7 @@ export default function Navbar({ nav }: { nav: NavData }){
 
           {/* Mobile: search under the logo row (except on /products, which has its own). */}
           {showHeaderSearch && (
-            <div className="pb-3 sm:hidden"><Suspense fallback={null}><SearchForm /></Suspense></div>
+            <div className="pb-3 sm:hidden"><Suspense fallback={<div className="h-12" aria-hidden="true" />}><SearchForm /></Suspense></div>
           )}
         </div>
       </header>

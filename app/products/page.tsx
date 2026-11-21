@@ -100,7 +100,8 @@ export default async function ProductsPage({ searchParams }: Props) {
         {/* No counts anywhere on the site (owner decision). */}
         <h1 className="mb-6 text-3xl font-extrabold text-fg sm:text-4xl">{heading}</h1>
 
-        <Suspense fallback={null}>
+        {/* Fallback keeps the same height, so nothing shifts when the form streams in. */}
+        <Suspense fallback={<div className="mb-4 h-12 max-w-2xl" aria-hidden="true" />}>
           <SearchForm keepFilters className="mb-4 max-w-2xl" />
         </Suspense>
 

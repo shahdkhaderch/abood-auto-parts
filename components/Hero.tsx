@@ -1,4 +1,5 @@
 import { getImageProps } from "next/image";
+import { preload } from "react-dom";
 import Link from "next/link";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { btnOutline, btnPrimary } from "@/components/ui";
@@ -20,13 +21,16 @@ const mobile = getImageProps({ src: "/hero/hero-main-mobile.jpg", alt: ALT, widt
  * Art direction with <picture>: hero-main.jpg from 1024px, hero-main-mobile.jpg below. Both load eagerly.
  */
 export default function Hero() {
+  // <link rel="preload"> for the hero, one per breakpoint (getImageProps does not add one by itself).
+  preload(desktop.src, { as: "image", imageSrcSet: desktop.srcSet, imageSizes: desktop.sizes, media: "(min-width: 1024px)", fetchPriority: "high" });
+  preload(mobile.src, { as: "image", imageSrcSet: mobile.srcSet, imageSizes: mobile.sizes, media: "(max-width: 1023px)", fetchPriority: "high" });
   return (
     <section aria-labelledby="hero-title" className="bg-page lg:bg-header">
       <div className="relative lg:flex lg:h-[70vh] lg:max-h-[720px] lg:min-h-[480px] lg:items-center">
         <div className="lg:absolute lg:inset-y-0 lg:left-0 lg:flex lg:w-[62%] lg:items-center">
           <picture className="block w-full">
             <source media="(min-width: 1024px)" srcSet={desktop.srcSet} sizes={desktop.sizes} />
-            <img {...mobile} alt={ALT} className="hero-photo-fade block aspect-video h-auto w-full object-cover lg:max-h-[720px] lg:object-contain lg:object-left" />
+            <img {...mobile} alt={ALT} data-intro-wait="" className="hero-photo-fade block aspect-video h-auto w-full object-cover lg:max-h-[720px] lg:object-contain lg:object-left" />
           </picture>
         </div>
 
