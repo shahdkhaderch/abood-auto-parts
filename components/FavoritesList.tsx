@@ -6,12 +6,13 @@ import ProductCard from "@/components/ProductCard";
 import { btnPrimary } from "@/components/ui";
 import type { Product } from "@/lib/catalog";
 import { useFavorites } from "@/lib/favorites";
+import { photosFirst } from "@/lib/product-images";
 
-/** The favourited products (newest first). Slugs no longer in the sheet are skipped silently. */
+/** The favourited products (newest first, photo-less ones last). Slugs no longer in the sheet are skipped silently. */
 export default function FavoritesList({ products }: { products: Product[] }) {
   const slugs = useFavorites();
   const bySlug = new Map(products.map((p) => [p.slug, p]));
-  const list = slugs.map((s) => bySlug.get(s)).filter((p): p is Product => !!p);
+  const list = photosFirst(slugs.map((s) => bySlug.get(s)).filter((p): p is Product => !!p));
 
   if (list.length === 0) {
     return (

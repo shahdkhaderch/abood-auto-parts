@@ -8,6 +8,7 @@ import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { badge, btnPrimaryLg, tile, textLink } from "@/components/ui";
 import { CATEGORY_LABELS, labelRepeatsName, PART_TYPE_LABELS, productLabel, type Product } from "@/lib/catalog";
 import { OFFER_LABEL, productsHref } from "@/lib/filters";
+import { photosFirst } from "@/lib/product-images";
 import { getProductBySlug, getProducts } from "@/lib/products";
 import { productPath, productWhatsAppLink, site } from "@/lib/site";
 
@@ -45,11 +46,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/** Up to 4 other parts for the same model: same category first, then the rest, in sheet order. */
+/** Up to 4 other parts for the same model: with a photo first, then same category first, in sheet order. */
 function relatedProducts(product: Product, all: Product[]): Product[] {
   const models = new Set(product.models.map((m) => m.slug));
   const sameModel = all.filter((p) => p.slug !== product.slug && p.models.some((m) => models.has(m.slug)));
-  return [...sameModel.filter((p) => p.category === product.category), ...sameModel.filter((p) => p.category !== product.category)].slice(0, 4);
+  return photosFirst([...sameModel.filter((p) => p.category === product.category), ...sameModel.filter((p) => p.category !== product.category)]).slice(0, 4);
 }
 
 export default async function ProductPage({ params }: Props) {

@@ -12,6 +12,7 @@ import {
   type Product,
 } from "./catalog";
 import { searchProducts } from "./search";
+import { photosFirst } from "./product-images";
 
 export type ProductFilters = {
   q: string;
@@ -84,7 +85,8 @@ export function applyFilters(products: Product[], f: ProductFilters, ignore?: ke
   if (f.category && ignore !== "category") list = list.filter((p) => p.category === f.category);
   if (f.offer && ignore !== "offer") list = list.filter((p) => p.onOffer);
   if (f.q && ignore !== "q") list = searchProducts(list, f.q);
-  return list;
+  // Search ranks by relevance; keep photo-less products last in every result list.
+  return photosFirst(list);
 }
 
 export type Facet = { value: string; label: string; count: number };

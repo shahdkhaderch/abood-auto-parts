@@ -4,6 +4,7 @@
 import { cache } from "react";
 import { csvToProducts, type Product } from "./catalog";
 import { withExistingImages } from "./image-check";
+import { photosFirst } from "./product-images";
 
 export type { Product, PartType } from "./catalog";
 export { PART_TYPE_LABELS } from "./catalog";
@@ -41,7 +42,8 @@ export const getProducts = cache(async (): Promise<Product[]> => {
   for (const w of warnings) console.warn(`[products] ${w}`);
   if (products.length === 0) throw new Error("[products] CSV has no products; keeping the last good data.");
   // Photos listed in the sheet but not on Cloudinary (yet) are dropped → designed placeholder.
-  return withExistingImages(products);
+  // Then products with a photo first, photo-less last (sheet order inside each group).
+  return photosFirst(await withExistingImages(products));
 });
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
