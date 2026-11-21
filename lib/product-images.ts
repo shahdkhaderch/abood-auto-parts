@@ -22,3 +22,4 @@ export function getProductPhoto(product: PhotoSource): string | null {
 export function isRemotePhoto(src: string): boolean {
   return /^https?:\/\//.test(src);
 }
+

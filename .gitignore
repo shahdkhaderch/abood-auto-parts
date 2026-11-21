@@ -43,3 +43,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Facebook photo downloader: browser login session and downloaded photos (never commit)
+/scripts/fb_photos/.profile/
+/scripts/fb_photos/output/
+/scripts/fb_photos/.venv/
+__pycache__/

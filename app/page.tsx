@@ -1,10 +1,15 @@
 import Link from "next/link";
-import A1Hero from "@/components/A1Hero";
+import BottomBanner from "@/components/BottomBanner";
+import CategorySection from "@/components/CategorySection";
+import Hero from "@/components/Hero";
 import LoadMoreButton from "@/components/LoadMoreButton";
+import ModelSection from "@/components/ModelSection";
 import ProductCard from "@/components/ProductCard";
+import SectionTitle from "@/components/SectionTitle";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
-import { btnPrimary, card } from "@/components/ui";
-import { parseShow, SHOW_STEP } from "@/lib/filters";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import { btnPrimary, btnSecondary, tile } from "@/components/ui";
+import { getNavData, parseShow, SHOW_STEP } from "@/lib/filters";
 import { getProducts } from "@/lib/products";
 import { whatsappLink } from "@/lib/site";
 
@@ -18,49 +23,46 @@ export default async function Home({ searchParams }: Props) {
   // The grid shows SHOW_STEP products, plus SHOW_STEP more per "عرض المزيد" (kept in ?show=).
   const show = parseShow(sp.show);
   const moreHref = products.length > show ? `/?show=${show + SHOW_STEP}` : null;
+  const { categories, models } = getNavData(products);
 
   return (
-    <main className="min-h-screen bg-page px-4 py-4 sm:px-6 sm:py-6">
-      <A1Hero />
+    <main className="min-h-screen bg-page">
+      <Hero />
 
-      <section id="products" className="mx-auto mt-10 max-w-6xl scroll-mt-32 sm:mt-16">
-        <div className="mb-6 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-bold text-ink sm:text-3xl">قطع مرسيدس</h2>
-            <p className="mt-1 text-base text-ink-soft">اختر القطعة واستفسر عنها مباشرة عبر واتساب</p>
-          </div>
-          {products.length > 0 && (
-            <Link href="/products" className="shrink-0 rounded-ui border border-line bg-card px-4 py-1 text-sm font-bold text-ink transition hover:border-accent hover:bg-accent-tint">
-              عرض كل القطع ‹
-            </Link>
+      <CategorySection categories={categories} />
+      <ModelSection models={models} />
+
+      <section id="products" aria-labelledby="products-title" className="scroll-mt-24 border-t border-tile-line bg-stage py-10 sm:py-14">
+        <div className="mx-auto max-w-7xl px-4 lg:px-6">
+          <SectionTitle id="products-title" label="Our parts" title="قطع مرسيدس" />
+
+          {products.length > 0 ? (
+            <>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-6">
+                {products.slice(0, show).map((p, i) => (
+                  <ProductCard key={p.slug} product={p} priority={i < 4} />
+                ))}
+              </div>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                {moreHref && <LoadMoreButton href={moreHref} />}
+                <Link href="/products" className={btnSecondary}>عرض كل القطع</Link>
+              </div>
+            </>
+          ) : (
+            <div className={`${tile} p-8 text-center`}>
+              <p className="font-bold text-fg">القطع غير متوفرة حالياً على الموقع.</p>
+              <p className="mt-1 text-base text-mist-card">تواصل معنا على واتساب وبنساعدك تلاقي القطعة.</p>
+              <a href={whatsappLink()} target="_blank" rel="noreferrer" className={`${btnPrimary} mt-4`}>
+                <WhatsAppIcon />
+                تواصل واتساب
+              </a>
+            </div>
           )}
         </div>
-
-        {products.length > 0 ? (
-          <>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-6">
-              {products.slice(0, show).map((p, i) => (
-                <ProductCard key={p.slug} product={p} priority={i < 4} />
-              ))}
-            </div>
-            {moreHref && <LoadMoreButton href={moreHref} />}
-          </>
-        ) : (
-          <div className={`${card} p-8 text-center`}>
-            <p className="font-bold text-ink">القطع غير متوفرة حالياً على الموقع.</p>
-            <p className="mt-1 text-base text-ink-soft">تواصل معنا على واتساب وبنساعدك تلاقي القطعة.</p>
-            <a
-              href={whatsappLink()}
-              target="_blank"
-              rel="noreferrer"
-              className={`${btnPrimary} mt-4`}
-            >
-              <WhatsAppIcon />
-              تواصل واتساب
-            </a>
-          </div>
-        )}
       </section>
+
+      <WhyChooseUs />
+      <BottomBanner />
     </main>
   );
 }

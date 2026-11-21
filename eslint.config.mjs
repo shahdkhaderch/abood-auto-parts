@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Python photo downloader: its .venv contains Playwright's bundled JavaScript driver.
+    "scripts/fb_photos/**",
   ]),
 ]);
 

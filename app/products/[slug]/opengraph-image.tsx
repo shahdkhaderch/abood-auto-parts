@@ -21,10 +21,9 @@ export const alt = `${site.name} - ${site.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-// Satori cannot read CSS variables: these are the allowed palette from the @theme tokens in app/globals.css.
-const C = { page: "#FAFAF8", card: "#FFFFFF", soft: "#F3F3F1", line: "#E8E6E3", ink: "#33363B", inkSoft: "#73777F", accent: "#F4B183", accentHover: "#EDA06C", tint: "#FFF5EE" };
-// Shadow tinted with the ink token (never black).
-const SHADOW = "0 4px 14px rgba(51,54,59,0.12)";
+// Satori cannot read CSS variables: these repeat the @theme tokens in app/globals.css.
+const C = { page: "#3F444C", header: "#383C44", tile: "#525862", line: "#646B76", white: "#FFFFFF", mist: "#C3C8D0", ink: "#383C44", cloud: "#EEF0F3", red: "#D0202A" };
+const SHADOW = "0 4px 14px rgba(56,60,68,0.25)";
 const cwd = process.cwd();
 
 async function loadFonts() {
@@ -113,8 +112,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const brand = (
     <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", lineHeight: 1.25 }}>
-        <RtlText text={site.name} style={{ fontSize: 34, fontWeight: 900, color: C.ink }} />
-        <RtlText text={site.tagline} style={{ fontSize: 22, fontWeight: 700, color: C.inkSoft }} />
+        <RtlText text={site.name} style={{ fontSize: 34, fontWeight: 900, color: C.white }} />
+        <RtlText text={site.tagline} style={{ fontSize: 22, fontWeight: 700, color: C.mist }} />
       </div>
       {logo && (
         // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- rendered by Satori, not the browser
@@ -124,26 +123,25 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   );
 
   // Photo: the whole photo (catalogue shots are square, on white) with the brand badge in the
-  // top corner (same as on the site), above a strip with model/chassis and the part type.
+  // top corner (same as on the site), above a strip with the model and the part type (no chassis field).
   if (product && photo) {
     return new ImageResponse(
       (
-        <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: C.card, fontFamily: "Cairo" }}>
+        <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: C.white, fontFamily: "Cairo" }}>
           {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
           <img src={photo} width={1200} height={480} style={{ position: "absolute", top: 0, left: 0, width: 1200, height: 480, objectFit: "contain" }} />
-          <div style={{ position: "absolute", top: 24, right: 28, display: "flex", alignItems: "center", gap: 12, padding: "6px 6px 6px 24px", borderRadius: 999, background: C.card, border: `2px solid ${C.line}`, boxShadow: SHADOW }}>
+          <div style={{ position: "absolute", top: 24, right: 28, display: "flex", alignItems: "center", gap: 12, padding: "6px 6px 6px 24px", borderRadius: 999, background: C.white, border: `2px solid ${C.cloud}`, boxShadow: SHADOW }}>
             <RtlText text={site.name} style={{ fontSize: 28, fontWeight: 900, color: C.ink }} />
             {logo && (
               // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
               <img src={logo} width={56} height={56} style={{ borderRadius: 999, objectFit: "contain" }} />
             )}
           </div>
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 150, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", background: C.soft, borderTop: `6px solid ${C.accent}` }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 18, fontSize: 52, fontWeight: 900, color: C.ink }}>
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 150, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", background: C.header, borderTop: `4px solid ${C.red}` }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 18, fontSize: 52, fontWeight: 900, color: C.white }}>
               <span>{product.model}</span>
-              {product.chassis && <span style={{ color: C.inkSoft }}>{product.chassis}</span>}
             </div>
-            <div style={{ display: "flex", padding: "6px 26px", borderRadius: 999, color: C.ink, background: C.tint, border: `2px solid ${C.accent}` }}>
+            <div style={{ display: "flex", padding: "6px 26px", borderRadius: 999, color: C.ink, background: C.white }}>
               <RtlText text={productLabel(product)} style={{ fontSize: 34, fontWeight: 900 }} />
             </div>
           </div>
@@ -163,16 +161,16 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           display: "flex",
           flexDirection: "column",
           padding: "44px 56px 40px",
-          color: C.ink,
+          color: C.white,
           fontFamily: "Cairo",
           backgroundColor: C.page,
-          borderBottom: `14px solid ${C.accent}`,
+          borderBottom: `8px solid ${C.red}`,
         }}
       >
         {/* top: part type (left) + brand (right) */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           {product ? (
-            <div style={{ display: "flex", padding: "6px 26px", borderRadius: 999, color: C.ink, background: C.tint, border: `2px solid ${C.accent}` }}>
+            <div style={{ display: "flex", padding: "6px 26px", borderRadius: 999, color: C.ink, background: C.white }}>
               <RtlText text={productLabel(product)} style={{ fontSize: 30, fontWeight: 900 }} />
             </div>
           ) : (
@@ -181,14 +179,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           {brand}
         </div>
 
-        {/* middle: icon + model/chassis */}
+        {/* middle: icon + model */}
         <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 48 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 220, height: 220, borderRadius: 44, background: C.card, border: `2px solid ${C.line}`, boxShadow: SHADOW }}>
-            <PartIcon type={!product ? "other" : product.partType === "other" ? product.category : product.partType} size={160} color={C.accentHover} strokeWidth={3} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 220, height: 220, borderRadius: 44, background: C.tile, border: `2px solid ${C.line}`, boxShadow: SHADOW }}>
+            <PartIcon type={!product ? "other" : product.partType === "other" ? product.category : product.partType} size={160} color={C.white} strokeWidth={3} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
-            <div style={{ fontSize: 108, fontWeight: 900, letterSpacing: -2 }}>{product?.model || "Mercedes-Benz"}</div>
-            {product?.chassis && <div style={{ display: "flex", alignSelf: "flex-start", marginTop: 12, padding: "0 28px", borderRadius: 28, background: C.tint, border: `2px solid ${C.accent}`, fontSize: 88, fontWeight: 900, color: C.ink, letterSpacing: -2 }}>{product.chassis}</div>}
+            <div style={{ fontSize: 108, fontWeight: 900, letterSpacing: -2 }}>{product?.model || "Mercedes"}</div>
           </div>
         </div>
 
@@ -196,7 +193,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div style={{ display: "flex", alignItems: "flex-end" }}>
           <RtlText
             text={product?.name ?? site.tagline}
-            style={{ flex: 1, fontSize: 42, fontWeight: 700, color: C.inkSoft, justifyContent: "flex-start", lineHeight: 1.3 }}
+            style={{ flex: 1, fontSize: 42, fontWeight: 700, color: C.mist, justifyContent: "flex-start", lineHeight: 1.3 }}
           />
         </div>
       </div>

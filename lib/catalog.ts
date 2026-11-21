@@ -55,7 +55,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   exterior: "كماليات خارجية",
   lights: "أضوية",
   "light-parts": "قطع الأضوية",
-  emblems: "شعارات وإشارات",
+  emblems: "إشارات", // renamed from "شعارات وإشارات" (owner request 2026-11-21); same products
   parts: "قطع بودي وغيار",
 };
 
@@ -118,6 +118,21 @@ export function parseModels(model: string): { label: string; slug: string }[] {
     .filter(Boolean)
     .map((label) => ({ label, slug: modelToSlug(label) }))
     .filter((m) => m.slug && !seen.has(m.slug) && seen.add(m.slug));
+}
+
+/** "A Class", "M/ML Class", "G Class" … (the lettered classes), as opposed to GLC, CLA, Vito … */
+export function isClassModel(label: string): boolean {
+  return /\bclass$/i.test(label.trim());
+}
+
+/**
+ * Display order for models everywhere (menu, drawer, filter chips): the "… Class" models first,
+ * by letter (A, C, E, G, M/ML, S), then every other model alphabetically (CLA, CLK, CLS, GLA, GLC …, Vito).
+ */
+export function compareModels(a: string, b: string): number {
+  const ga = isClassModel(a) ? 0 : 1;
+  const gb = isClassModel(b) ? 0 : 1;
+  return ga - gb || a.localeCompare(b, "en", { numeric: true, sensitivity: "base" });
 }
 
 /** Mercedes chassis prefixes by platform number. Anything not listed falls back to "W". */
@@ -244,14 +259,27 @@ export function codeToSlug(code: string): string {
 }
 
 // Accepted القسم values (normalised) → category key.
-const CATEGORY_VALUES: Record<string, Category> = Object.fromEntries(
-  (Object.entries(CATEGORY_LABELS) as [Category, string][]).map(([key, label]) => [normalizeText(label), key]),
-);
+const CATEGORY_VALUES: Record<string, Category> = Object.fromEntries([
+  ...(Object.entries(CATEGORY_LABELS) as [Category, string][]).map(([key, label]) => [normalizeText(label), key]),
+  // Old label, still accepted in the القسم column.
+  [normalizeText("شعارات وإشارات"), "emblems"],
+]);
 
 export function parseCategory(value: string): Category | null | undefined {
   const v = normalizeText(value);
   if (!v) return null;
   return CATEGORY_VALUES[v]; // undefined = unknown value
+}
+
+/**
+ * True when a short label (part type / category) repeats words that are already in the product name,
+ * e.g. "طبون أمامي" for "طبون امامي AMG C205". Then the label is not shown next to the name.
+ */
+export function labelRepeatsName(label: string, name: string): boolean {
+  const nameWords = new Set(normalizeText(name).split(" "));
+  return normalizeText(label)
+    .split(" ")
+    .some((w) => w.length >= 3 && nameWords.has(w));
 }
 
 export type ParseResult = { products: Product[]; warnings: string[] };

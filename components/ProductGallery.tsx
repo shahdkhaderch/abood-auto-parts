@@ -53,7 +53,7 @@ export default function ProductGallery({ photos, alt, className, fallback }: Pro
 
   return (
     <div className="flex flex-col gap-3">
-      <div className={`${className} bg-card`}>
+      <div className={className}>
         <div
           ref={trackRef}
           className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -77,7 +77,7 @@ export default function ProductGallery({ photos, alt, className, fallback }: Pro
                 fill
                 priority={i === 0}
                 sizes="(min-width: 640px) 50vw, 100vw"
-                className="object-contain"
+                className={i === 0 ? "object-contain mix-blend-multiply" : "object-cover"}
                 onError={() => setFailed((s) => new Set(s).add(src))}
               />
               <PhotoBadge variant="page" />
@@ -97,11 +97,11 @@ export default function ProductGallery({ photos, alt, className, fallback }: Pro
               aria-label={`عرض الصورة ${ordinal(i)}`}
               onClick={() => goTo(i)}
               className={[
-                "relative h-16 w-16 overflow-hidden rounded-ui border bg-card transition sm:h-20 sm:w-20",
-                i === current ? "border-accent-hover ring-2 ring-accent-tint" : "border-line opacity-70 hover:border-accent hover:opacity-100",
+                "relative h-16 w-16 overflow-hidden rounded-[10px] border-2 bg-photo transition sm:h-20 sm:w-20",
+                i === current ? "border-red" : "border-tile-line opacity-60 hover:border-mist hover:opacity-100",
               ].join(" ")}
             >
-              <Image src={src} alt="" fill sizes="80px" className="object-contain p-1" />
+              <Image src={src} alt="" fill sizes="80px" className={i === 0 ? "object-contain p-1 mix-blend-multiply" : "object-cover"} />
             </button>
           ))}
         </div>

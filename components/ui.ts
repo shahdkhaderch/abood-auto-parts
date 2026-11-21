@@ -1,41 +1,54 @@
-// One component system for the whole site: same radius (14px), border, soft shadow, paddings and buttons.
-// Every card, filter panel, search box, slider and button builds on these strings.
+// One component system for the whole site (charcoal theme): flat grey tiles, white pill buttons,
+// dark pill inputs/chips. Every card, filter, search box and button builds on these strings.
 
-/** White surface with the standard border, radius and soft shadow. */
-export const card = "rounded-ui border border-line bg-card shadow-soft";
-/** Soft grey panel (filters, alternate blocks). Same radius and border as a card, no shadow. */
-export const panel = "rounded-ui border border-line bg-soft";
+/** Charcoal card (category/model cards, detail tables, empty states). */
+export const tile = "rounded-ui border border-tile-line bg-tile shadow-card";
+/** Product card: 24px radius, thin soft border, light shadow. */
+export const card = "rounded-card border border-tile-line bg-tile shadow-card";
+/** Flat dark panel (filters). */
+export const panel = "rounded-ui border border-tile-line bg-header";
 
 // Size variants are complete strings: never append another px-/text-/gap-/h- class to a button,
 // because with two conflicting utilities the stylesheet order (not the class order) decides which wins.
-const btnShape = "inline-flex items-center justify-center rounded-ui font-bold text-ink transition duration-200 active:scale-[0.98]";
-const primary = "bg-accent hover:bg-accent-hover";
-const md = "h-12 gap-2 px-6 text-base";
-/** Primary: soft orange with ink text (also the WhatsApp button). */
-export const btnPrimary = `${btnShape} ${md} ${primary}`;
-/** Primary, compact (header). */
-export const btnPrimarySm = `${btnShape} h-11 gap-2 px-4 text-sm ${primary}`;
-/** Primary, large (product page WhatsApp). */
-export const btnPrimaryLg = `${btnShape} h-14 gap-2 px-6 text-lg ${primary}`;
-/** Primary, full width inside a product card; stays on one line in the narrow two-column phone grid. */
-export const btnPrimaryCard = `${btnShape} h-11 w-full gap-1.5 whitespace-nowrap px-2 text-sm sm:gap-2 sm:text-base ${primary}`;
-/** Secondary: white with a border. */
-export const btnSecondary = `${btnShape} ${md} border border-line bg-card hover:border-accent hover:bg-accent-tint`;
-/** Square icon button in the header. */
+const pill = "inline-flex items-center justify-center rounded-full font-bold transition duration-200 active:scale-[0.98]";
+const white = "bg-white text-ink hover:bg-cloud";
+/** White pill with dark text: the primary button everywhere (also WhatsApp). */
+export const btnPrimary = `${pill} h-12 gap-2 px-6 text-base ${white}`;
+/** Compact. */
+export const btnPrimarySm = `${pill} h-10 gap-2 px-4 text-sm ${white}`;
+/** Large (product page WhatsApp). */
+export const btnPrimaryLg = `${pill} h-14 gap-2 px-7 text-lg ${white}`;
+/** Product card WhatsApp button: fills the row beside the heart. 14px text + 16px icon fit from 375px (13px text below that); the icon never shrinks. */
+export const btnPrimaryCard = `${pill} h-10 min-w-0 flex-1 gap-1 whitespace-nowrap px-1 text-sm max-[374px]:text-[13px] sm:h-11 sm:gap-2 sm:px-2 sm:text-[15px] [&>svg]:shrink-0 ${white}`;
+/** Outline pill on dark (hero WhatsApp): transparent, light border. */
+export const btnOutline = `${pill} h-12 gap-2 px-6 text-base border border-fg/70 text-fg hover:border-fg hover:bg-white/10`;
+/** Secondary: dark pill with a thin border. */
+export const btnSecondary = `${pill} h-12 gap-2 px-6 text-base border border-field-line bg-field text-fg hover:border-mist`;
+
+/**
+ * Round icon button on dark. No display class on purpose: add `inline-flex` or
+ * `hidden sm:inline-flex` where it is used (two display classes in one list conflict).
+ */
 export const iconBtn =
-  "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-ui border border-line bg-card text-ink transition hover:border-accent hover:bg-accent-tint";
+  "relative h-11 w-11 shrink-0 items-center justify-center rounded-full border border-field-line bg-field text-fg transition hover:border-mist";
 
-/** Text input on the soft surface; turns white with an orange border when focused. */
+/** Dark pill text input. */
 export const input =
-  "h-12 w-full rounded-ui border border-line bg-soft text-base text-ink outline-none transition placeholder:text-ink-soft focus:border-accent-hover focus:bg-card";
+  "h-12 w-full rounded-full border border-field-line bg-field text-base text-fg outline-none transition placeholder:text-mist focus:border-mist";
 
-/** Filter / navigation chip. */
-export const chip = "inline-flex h-10 shrink-0 items-center rounded-ui border px-4 text-sm font-medium text-ink transition";
-export const chipIdle = "border-line bg-card hover:border-accent hover:bg-accent-tint";
-export const chipActive = "border-accent bg-accent-tint font-bold";
+/** Filter chip (dark pill; active = white). */
+export const chip = "inline-flex h-10 shrink-0 items-center rounded-full border px-4 text-sm font-medium transition";
+export const chipIdle = "border-field-line bg-field text-mist hover:border-mist hover:text-fg";
+export const chipActive = "border-white bg-white font-bold text-ink";
 
-/** Small label (category chip on cards, badges). */
-export const tag = "inline-flex w-fit items-center rounded-ui bg-accent-tint px-3 py-0.5 text-sm font-medium leading-6 text-ink";
+/** Small label over a photo or on dark (category chip on cards). */
+export const tag = "inline-flex w-fit items-center rounded-full border border-field-line bg-header/90 px-3 py-0.5 text-xs font-medium leading-5 text-fg sm:text-sm";
+/** Red badge (offers, small highlights). */
+export const badge = "inline-flex w-fit items-center rounded-full bg-red px-3 py-0.5 text-xs font-bold leading-5 text-fg sm:text-sm";
 
-/** Inline text link: ink text, orange underline. */
-export const textLink = "font-bold text-ink underline decoration-accent decoration-2 underline-offset-4 transition hover:decoration-accent-hover";
+/** Inline text link on dark: white text, red underline. */
+export const textLink = "font-bold text-fg underline decoration-red decoration-2 underline-offset-4 transition hover:decoration-white";
+
+/** Small uppercase English label above section titles (Inter, letter-spaced). */
+export const eyebrowBase = "font-label text-xs font-medium uppercase tracking-[0.2em] sm:text-sm";
+export const eyebrow = `${eyebrowBase} text-mist`;

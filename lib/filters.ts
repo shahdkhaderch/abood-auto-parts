@@ -3,6 +3,7 @@
 
 import {
   CATEGORY_LABELS,
+  compareModels,
   OFFER_LABEL,
   PART_TYPE_LABELS,
   PART_TYPE_PARAMS,
@@ -114,8 +115,8 @@ export function getFacets(products: Product[]): Facets {
   }
 
   return {
-    // Most products first, so the common models are at the top of the menu.
-    models: [...models.values()].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label)),
+    // "… Class" models first (A, C, E …), then the others alphabetically (CLA, CLS, GLA, GLC …). See compareModels.
+    models: [...models.values()].sort((a, b) => compareModels(a.label, b.label)),
     // "other" never gets its own option; those parts are found through their category.
     types: (Object.keys(PART_TYPE_LABELS) as Exclude<PartType, "other">[])
       .filter((t) => types.get(t))

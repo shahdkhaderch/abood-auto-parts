@@ -7,7 +7,7 @@ export default function PhotoBadge({ variant }: { variant: "card" | "page" }) {
   return (
     <div
       className={[
-        "pointer-events-none absolute flex items-center rounded-ui border border-line bg-card/90 text-ink shadow-soft backdrop-blur-sm",
+        "pointer-events-none absolute flex items-center rounded-full border border-ink/10 bg-white/90 text-ink shadow-soft backdrop-blur-sm",
         isPage
           ? "right-2.5 top-2.5 gap-1.5 py-0.5 pl-2.5 pr-0.5 sm:right-4 sm:top-4 sm:gap-2 sm:py-1 sm:pl-3.5 sm:pr-1"
           : "right-1.5 top-1.5 gap-1 py-0.5 pl-2 pr-0.5 sm:right-2 sm:top-2 sm:gap-1.5",

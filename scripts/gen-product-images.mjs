@@ -1,6 +1,7 @@
 // Generates lib/product-images.generated.ts: a map of product code -> photo path,
 // built from the files in public/products. Runs automatically before dev/build/lint.
 // Matching is case-insensitive, so "bg2j0019.JPG" still matches code "BG2J0019".
+// (Homepage category/model images are listed by hand in lib/showcase-images.ts.)
 
 import { readdirSync, writeFileSync, existsSync } from "node:fs";
 import { join, extname, basename } from "node:path";
