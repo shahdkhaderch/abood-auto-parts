@@ -48,6 +48,10 @@ test("a name without Latin tokens or years gives only the part line", () => {
   assert.deepEqual(parseProductName("حساسات طبون"), { model: "", part: "حساسات طبون", years: "" });
 });
 
+test("years written with spaces around the dash", () => {
+  assert.deepEqual(parseProductName("طبون امامي CLA117 2013 - 2015"), { model: "CLA117", part: "طبون امامي", years: "2013 - 2015" });
+});
+
 test("empty name", () => {
   assert.deepEqual(parseProductName(""), { model: "", part: "", years: "" });
 });

@@ -1,6 +1,6 @@
 import type { Product } from "./catalog";
 import { PRODUCT_IMAGES } from "./product-images.generated";
-import { cloudinaryImageUrl } from "./site";
+import { absoluteUrl, cloudinaryBaseUrl, cloudinaryImageUrl } from "./site";
 
 type PhotoSource = Pick<Product, "slug" | "imageFiles">;
 
@@ -42,3 +42,23 @@ export function isRemotePhoto(src: string): boolean {
   return /^https?:\/\//.test(src);
 }
 
+
+/** Link-preview image for products without a photo (absolute URL in the metadata). */
+const DEFAULT_SHARE_IMAGE = { path: "/hero/hero-main.jpg", width: 1672, height: 941 };
+
+/**
+ * og:image / twitter:image for a product page (WhatsApp link preview). An absolute https URL straight to a
+ * CDN file, small and fast, so WhatsApp's crawler always gets it (it skips images over ~300 KB or slow ones):
+ * - main photo on Cloudinary, transformed to a 1200×630 JPG padded on white (whole part visible, ~30–100 KB);
+ * - a local public/products photo, as is;
+ * - no photo: the homepage hero image.
+ */
+export function productShareImage(product: PhotoSource): { url: string; width: number; height: number; type: string } {
+  const file = product.imageFiles[0];
+  if (file) {
+    return { url: `${cloudinaryBaseUrl}/w_1200,h_630,c_pad,b_white,q_auto,f_jpg/${encodeURIComponent(file)}`, width: 1200, height: 630, type: "image/jpeg" };
+  }
+  const local = PRODUCT_IMAGES[product.slug.toLowerCase()];
+  if (local) return { url: absoluteUrl(local), width: 1200, height: 1200, type: "image/jpeg" };
+  return { url: absoluteUrl(DEFAULT_SHARE_IMAGE.path), width: DEFAULT_SHARE_IMAGE.width, height: DEFAULT_SHARE_IMAGE.height, type: "image/jpeg" };
+}

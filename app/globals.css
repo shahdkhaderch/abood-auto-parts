@@ -3,9 +3,7 @@
 /*
  * Design tokens: the ONLY colours on the site. Tailwind's default palette is switched off,
  * so a default-palette class (black, orange-500 …) does not exist and cannot sneak back in.
- * The generated WhatsApp preview (app/products/[slug]/opengraph-image.tsx) cannot read CSS
- * variables and repeats these same values in one constant block; layout.tsx repeats `header`
- * as the browser theme colour.
+ * layout.tsx repeats `header` as the browser theme colour.
  *
  * Charcoal theme: greys from #383c44 (header) to #525862 (cards), near-white text (fg), white pill buttons with dark text.
  * Red is ONLY for small highlights: the active nav underline, badges, the active thumbnail.

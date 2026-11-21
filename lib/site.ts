@@ -1,4 +1,6 @@
 // Single source of truth for business/contact details and the public site URL.
+import { productLines, type Product } from "./catalog";
+import { buildProductMessage } from "./whatsapp-message";
 // Confirm with the owner before changing any of these values.
 
 export const site = {
@@ -41,18 +43,15 @@ export function whatsappLink(message: string = site.defaultWhatsAppMessage): str
   return `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
-export function productPath(slug: string): string {
-  return `/products/${slug}`;
+/** Public product page path (no item code): /products/<readable>-<id>. */
+export function productPath(p: { urlSlug: string }): string {
+  return `/products/${p.urlSlug}`;
 }
 
-// The item code is never shown to customers (owner decision), so it is not in the message.
-// Name, model and link only (see the owner decisions in CLAUDE.md §0).
-export function productWhatsAppLink(p: { name: string; model: string; slug: string }): string {
-  const message = [
-    "مرحبا، بدي استفسر عن هالقطعة:",
-    p.name,
-    `الموديل: ${p.model}`,
-    absoluteUrl(productPath(p.slug)),
-  ].join("\n");
-  return whatsappLink(message);
+/**
+ * WhatsApp link with the prefilled product message: the three card lines on separate, bidi-safe lines and the
+ * product link (lib/whatsapp-message.ts). No item code, price or chassis field.
+ */
+export function productWhatsAppLink(p: Pick<Product, "name" | "code" | "model" | "partType" | "category" | "urlSlug">): string {
+  return whatsappLink(buildProductMessage({ ...productLines(p), url: absoluteUrl(productPath(p)) }));
 }

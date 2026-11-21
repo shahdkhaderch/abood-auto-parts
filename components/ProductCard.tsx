@@ -3,8 +3,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import ProductImage from "@/components/ProductImage";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { badge, btnPrimaryCard, card } from "@/components/ui";
-import { productLabel, type Product } from "@/lib/catalog";
-import { parseProductName } from "@/lib/product-name";
+import { productLines, type Product } from "@/lib/catalog";
 import { productPath, productWhatsAppLink } from "@/lib/site";
 
 /** Thin outline three-pointed star in a circle: small decorative hint that the parts are for Mercedes. */
@@ -33,15 +32,14 @@ function CalendarIcon() {
  * Works in server and client trees (the favourites page renders it on the client).
  */
 export default function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
-  // Rows with no name in the sheet carry the code as the name: never show it (decision 5).
-  const parsed = product.name === product.code ? { model: "", part: productLabel(product), years: "" } : parseProductName(product.name);
-  // No Latin token in the name → the الموديل column ("C Class") as the headline.
-  const model = parsed.model || product.model;
+  // Same three lines as the WhatsApp message (lib/catalog.ts productLines): never the item code.
+  const parsed = productLines(product);
+  const model = parsed.model;
 
   return (
     <article className={`group relative flex h-full flex-col p-1.5 sm:p-3 ${card} transition duration-300 hover:-translate-y-1 hover:border-mist/50 active:scale-[0.98] active:border-mist motion-reduce:hover:translate-y-0`}>
       {/* The link stretches over the whole card (after:inset-0); the WhatsApp and heart buttons sit above it. */}
-      <Link href={productPath(product.slug)} className="flex flex-col after:absolute after:inset-0 after:z-0 after:rounded-card after:content-['']" aria-label={product.name}>
+      <Link href={productPath(product)} className="flex flex-col after:absolute after:inset-0 after:z-0 after:rounded-card after:content-['']" aria-label={product.name}>
         <ProductImage product={product} priority={priority} />
 
         {/* Fixed height for three lines, so a card with fewer lines keeps the same rhythm. */}

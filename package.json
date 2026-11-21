@@ -11,7 +11,8 @@
     "start": "next start",
     "prelint": "npm run images",
     "lint": "eslint",
-    "test": "node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON lib/"
+    "test": "node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON lib/",
+    "check:og": "node scripts/check-og.mjs"
   },
   "dependencies": {
     "next": "16.1.4",

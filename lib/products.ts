@@ -5,6 +5,7 @@ import { cache } from "react";
 import { csvToProducts, type Product } from "./catalog";
 import { withExistingImages } from "./image-check";
 import { photosFirst } from "./product-images";
+import { idFromUrlSlug } from "./product-url";
 
 export type { Product, PartType } from "./catalog";
 export { PART_TYPE_LABELS } from "./catalog";
@@ -46,8 +47,20 @@ export const getProducts = cache(async (): Promise<Product[]> => {
   return photosFirst(await withExistingImages(products));
 });
 
+/**
+ * Product for a /products/<slug> URL: by the id at the end of the readable slug (renames keep working),
+ * or by an old /products/<code> URL. The page redirects permanently when the slug is not the current one.
+ */
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   const products = await getProducts();
-  const key = slug.toLowerCase();
-  return products.find((p) => p.slug === key);
+  let key = slug.toLowerCase();
+  try {
+    key = decodeURIComponent(slug).toLowerCase();
+  } catch {
+    // malformed %-encoding: use as is
+  }
+  const exact = products.find((p) => p.urlSlug === key);
+  if (exact) return exact;
+  const id = idFromUrlSlug(key);
+  return (id ? products.find((p) => idFromUrlSlug(p.urlSlug) === id) : undefined) ?? products.find((p) => p.slug === key);
 }

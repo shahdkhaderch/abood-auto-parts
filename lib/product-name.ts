@@ -36,7 +36,9 @@ function formatModelToken(t: string): string {
 }
 
 export function parseProductName(name: string): NameParts {
-  const tokens = name.trim().split(/\s+/).filter(Boolean).flatMap(splitGlued);
+  // "2013 - 2015" (spaces around the dash) → one token "2013-2015".
+  const joined = name.trim().replace(new RegExp(`(${YEAR})\\s*-\\s*(${YEAR})`, "g"), "$1-$2");
+  const tokens = joined.split(/\s+/).filter(Boolean).flatMap(splitGlued);
   const isModel = (t: string | undefined) => !!t && !ARABIC.test(t) && LATIN_OR_DIGIT.test(t) && !YEAR_TOKEN.test(t);
 
   const model: string[] = [];

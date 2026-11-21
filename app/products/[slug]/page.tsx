@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import ProductImage from "@/components/ProductImage";
 import ProductName from "@/components/ProductName";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { badge, btnPrimaryLg, tile, textLink } from "@/components/ui";
-import { CATEGORY_LABELS, labelRepeatsName, PART_TYPE_LABELS, productLabel, type Product } from "@/lib/catalog";
+import { CATEGORY_LABELS, displayName, labelRepeatsName, PART_TYPE_LABELS, productLabel, type Product } from "@/lib/catalog";
 import { OFFER_LABEL, productsHref } from "@/lib/filters";
-import { photosFirst } from "@/lib/product-images";
+import { photosFirst, productShareImage } from "@/lib/product-images";
 import { getProductBySlug, getProducts } from "@/lib/products";
 import { productPath, productWhatsAppLink, site } from "@/lib/site";
 
@@ -19,7 +19,7 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
   const products = await getProducts();
-  return products.map((p) => ({ slug: p.slug }));
+  return products.map((p) => ({ slug: p.urlSlug }));
 }
 
 // The item code is never shown to visitors (it stays in the URL and the WhatsApp message only).
@@ -34,15 +34,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProductBySlug(slug);
   if (!product) return { title: "القطعة غير موجودة" };
 
-  const title = `${product.name} | ${site.name}`;
+  const name = displayName(product);
+  const title = `${name} | ${site.name}`;
   const description = describe(product);
+  // Absolute CDN image URL (see productShareImage); og:url is absolute through metadataBase (NEXT_PUBLIC_SITE_URL).
+  const image = { ...productShareImage(product), alt: name };
   return {
     title,
     description,
-    alternates: { canonical: productPath(product.slug) },
-    // og:image comes from ./opengraph-image.tsx
-    openGraph: { type: "website", title, description, url: productPath(product.slug), siteName: site.name, locale: "ar_PS" },
-    twitter: { card: "summary_large_image", title, description },
+    alternates: { canonical: productPath(product) },
+    openGraph: { type: "website", title, description, url: productPath(product), siteName: site.name, locale: "ar_PS", images: [image] },
+    twitter: { card: "summary_large_image", title, description, images: [image] },
   };
 }
 
@@ -57,6 +59,8 @@ export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) notFound();
+  // Old /products/<code> URLs and outdated readable parts → the current URL (permanent redirect).
+  if (slug !== product.urlSlug) permanentRedirect(productPath(product));
   const related = relatedProducts(product, await getProducts());
   const showLabel = !labelRepeatsName(productLabel(product), product.name);
 
@@ -80,7 +84,7 @@ export default async function ProductPage({ params }: Props) {
           <span aria-hidden="true">‹</span>
           <Link href="/products" className="shrink-0 transition hover:text-fg">القطع</Link>
           <span aria-hidden="true">‹</span>
-          <span className="truncate font-medium text-fg"><ProductName name={product.name} /></span>
+          <span className="truncate font-medium text-fg"><ProductName name={displayName(product)} /></span>
         </nav>
 
         <div className="grid gap-6 md:grid-cols-2 md:gap-10">
@@ -100,7 +104,7 @@ export default async function ProductPage({ params }: Props) {
                 )}
               </div>
             )}
-            <h1 className="text-2xl font-extrabold leading-[1.45] text-fg sm:text-3xl lg:text-4xl"><ProductName name={product.name} /></h1>
+            <h1 className="text-2xl font-extrabold leading-[1.45] text-fg sm:text-3xl lg:text-4xl"><ProductName name={displayName(product)} /></h1>
 
             <dl className={`${tile} mt-6 divide-y divide-tile-line overflow-hidden`}>
               {details.map((d) => (

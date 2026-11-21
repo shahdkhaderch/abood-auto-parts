@@ -1,6 +1,8 @@
 // Pure catalogue helpers: CSV parsing and product derivation.
 // No Next.js or network code here so it can be unit-checked in isolation.
 
+import { parseProductName } from "./product-name";
+import { buildUrlSlug, productId } from "./product-url";
 import { normalizeText } from "./text";
 
 export type PartType = "front-bumper" | "rear-bumper" | "diffuser" | "other";
@@ -8,8 +10,10 @@ export type PartType = "front-bumper" | "rear-bumper" | "diffuser" | "other";
 export type Product = {
   /** Code exactly as written in the sheet (رقم الصنف), e.g. "BG2J0019". */
   code: string;
-  /** URL slug: the code in lowercase. */
+  /** Internal key: the code in lowercase (favourites in the browser, React keys, local photos). Never in a URL. */
   slug: string;
+  /** Public URL slug without the code, e.g. "amg-c205-front-bumper-2019-2021-k7q2m9" (lib/product-url.ts). */
+  urlSlug: string;
   /** Product name from the sheet (اسم الصنف). */
   name: string;
   /** Mercedes model text from the sheet (الموديل), e.g. "C Class" or "C Class, E Class". */
@@ -272,6 +276,26 @@ export function parseCategory(value: string): Category | null | undefined {
 }
 
 /**
+ * The name shown to customers. Rows without a name in the sheet carry the item code as their name
+ * (csvToProducts); the code is never shown (decision 5), so those show their part type / category label.
+ */
+/** English words for the readable part of the URL: the part type, else the category key. */
+const URL_PART: Record<Exclude<PartType, "other">, string> = { "front-bumper": "front-bumper", "rear-bumper": "rear-bumper", diffuser: "diffuser" };
+
+/**
+ * The three card lines (also used in the WhatsApp message and the URL): model tokens, Arabic part words and
+ * years parsed from the name. No Latin token → the الموديل column; a row without a name → its label, never the code.
+ */
+export function productLines(p: Pick<Product, "name" | "code" | "model" | "partType" | "category">): { model: string; part: string; years: string } {
+  const parsed = p.name === p.code ? { model: "", part: productLabel(p), years: "" } : parseProductName(p.name);
+  return { ...parsed, model: parsed.model || p.model };
+}
+
+export function displayName(p: Pick<Product, "name" | "code" | "partType" | "category">): string {
+  return p.name === p.code ? productLabel(p) : p.name;
+}
+
+/**
  * True when a short label (part type / category) repeats words that are already in the product name,
  * e.g. "طبون أمامي" for "طبون امامي AMG C205". Then the label is not shown next to the name.
  */
@@ -317,6 +341,7 @@ export function csvToProducts(csv: string): ParseResult {
   }
 
   const seen = new Set<string>();
+  const ids = new Map<string, string>();
   const products: Product[] = [];
 
   rows.slice(1).forEach((r, idx) => {
@@ -355,16 +380,23 @@ export function csvToProducts(csv: string): ParseResult {
     for (const v of rejected) warnings.push(`row ${line}: ${HEADER_IMAGE} "${v}" is not a plain .jpg file name; ignored`);
 
     const partType = detectPartType(name);
+    const category: Category = sheetCategory ?? (partType === "other" ? detectCategory(name) : "exterior");
+    const lines = productLines({ name: name || code, code, model, partType, category });
+    const urlSlug = buildUrlSlug({ code, model: lines.model, part: partType === "other" ? category : URL_PART[partType], years: lines.years });
+    const id = productId(code);
+    if (ids.has(id)) warnings.push(`row ${line}: URL id "${id}" of "${code}" collides with "${ids.get(id)}"; that product is reached by its old URL only`);
+    else ids.set(id, code);
     products.push({
       code,
       slug,
+      urlSlug,
       name: name || code,
       model,
       models: parseModels(model),
       chassis: detectChassis(name),
       partType,
       // القسم wins; bumpers/diffusers are exterior even when the name mentions "كشاف ليد".
-      category: sheetCategory ?? (partType === "other" ? detectCategory(name) : "exterior"),
+      category,
       onOffer: rawOffer === OFFER_YES,
       imageFiles,
     });
